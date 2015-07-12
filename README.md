@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/newhoggy/scalap-hello.svg?branch=master)](https://travis-ci.org/newhoggy/scalap-hello)
+[![Build Status](https://travis-ci.org/newhoggy/pico-cuckoo-filter.svg?branch=master)](https://travis-ci.org/newhoggy/pico-cuckoo-filter)
 
-Sample Repository
-=================
-This is a sample repository that does CI via Travis.
+Cuckoo filter
+=============
+Implements cuckoo filter in Scala.

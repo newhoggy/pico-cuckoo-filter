@@ -16,12 +16,12 @@ object DumbHashMap {
   def empty[A] = EmptDumbyHashMap
 }
 
-case class LeafDumbHashMap[A, B](table: Array[B], override val size: Int) extends DumbHashMap[A, B] {
-  override def get[AA <: A](key: A)(implicit ev: HashIndexed[AA]): Option[B] = {
-    assert(ev.hashIndexBits == DumbHashMap.levelBits)
-    Option(table(key.hashIndex))
-  }
-}
+//case class LeafDumbHashMap[A, B](table: Array[B], override val size: Int) extends DumbHashMap[A, B] {
+//  override def get[AA <: A](key: A)(implicit ev: HashIndexed[AA]): Option[B] = {
+//    assert(ev.hashIndexBits == DumbHashMap.levelBits)
+//    Option(table(key.hashIndex))
+//  }
+//}
 
 case object EmptDumbyHashMap extends DumbHashMap[Any, Nothing] {
   override def size: Long = 0
