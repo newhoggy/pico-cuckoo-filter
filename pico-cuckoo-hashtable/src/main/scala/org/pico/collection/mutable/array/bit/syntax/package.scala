@@ -60,9 +60,42 @@ package object syntax {
       if (o == 0) {
         getAtIndex(i)
       } else {
-        val p: Int = (32 - o)
+        val p: Int = 32 - o
 
         getAtIndex(i + 0) << o | getAtIndex(i + 1) >>> p
+      }
+    }
+  }
+
+  implicit class ShortBitArrayOps_2s8EdpV(val array: Array[Short]) extends AnyVal {
+    final def setAtIndex(i: Long, v: Short): Unit = array(i.toInt) = v
+
+    final def getAtIndex(i: Long): Short = array(i.toInt)
+
+    final def short(n: Long, v: Put[Short]): Unit = {
+      val i: Int = (n / 16).toInt
+      val o: Int = (n % 16).toInt
+
+      if (o == 0) {
+        setAtIndex(i, v.value)
+      } else {
+        val p = 16 - o
+
+        setAtIndex(i + 0, (getAtIndex(i + 0) >>> p << p | (v.value >>> o)).toShort)
+        setAtIndex(i + 1, (getAtIndex(i + 1) << o >>> o | (v.value <<  p)).toShort)
+      }
+    }
+
+    final def short(n: Long): Short = {
+      val i: Int = (n / 16).toInt
+      val o: Int = (n % 16).toInt
+
+      if (o == 0) {
+        getAtIndex(i)
+      } else {
+        val p: Int = 16 - o
+
+        ((0xffff & getAtIndex(i + 0).toInt) << o | (0xffff & getAtIndex(i + 1).toInt) >>> p).toShort
       }
     }
   }
