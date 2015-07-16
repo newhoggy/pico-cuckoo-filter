@@ -1,4 +1,4 @@
-package org.pico.collection.mutable
+package org.pico.collection.mutable.array.bit.syntax
 
 import org.scalacheck.{Arbitrary, Gen}
 import org.specs2.ScalaCheck
@@ -11,10 +11,10 @@ class LongBitArraySpec extends Specification with ScalaCheck {
 
   "Values that are set can be retrieved again" in {
     prop { (v: Long, offset: Offset) =>
-      val buffer = new LongBitArray(new Array[Long](5))
+      val buffer = new Array[Long](5)
 
-      buffer(offset.value) = v
-      buffer(offset.value) ==== v
+      buffer.bit(offset.value, Put(v))
+      buffer.bit(offset.value) ==== v
     }
   }
 }
