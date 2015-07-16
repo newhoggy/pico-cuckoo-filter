@@ -16,4 +16,12 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
       buffer.byte(offset.value) ==== v
     }
   }
+
+  "Shorts that are set can be retrieved again" in {
+    prop { (v: Short, offset: Offset) =>
+      val buffer = new Array[Short](10)
+      buffer.short(offset.value, Put(v))
+      buffer.short(offset.value) ==== v
+    }
+  }
 }

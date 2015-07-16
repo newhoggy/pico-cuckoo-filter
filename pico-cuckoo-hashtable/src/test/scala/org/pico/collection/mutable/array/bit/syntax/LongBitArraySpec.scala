@@ -9,7 +9,7 @@ class LongBitArraySpec extends Specification with ScalaCheck {
 
   implicit val arbitraryOffset = Arbitrary[Offset](Gen.choose(0L, 128L).map(Offset))
 
-  "Values that are set can be retrieved again" in {
+  "Bytes that are set can be retrieved again" in {
     prop { (v: Long, offset: Offset) =>
       val buffer = new Array[Long](5)
       buffer.long(offset.value, Put(v))
