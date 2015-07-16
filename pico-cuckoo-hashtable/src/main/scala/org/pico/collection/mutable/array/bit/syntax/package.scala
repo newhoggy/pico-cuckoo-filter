@@ -25,6 +25,14 @@ package object syntax {
     def ||||(that: Short): Short = (self | that).toShort
   }
 
+  implicit class ByteOps_2s8EdpV(val self: Byte) extends AnyVal {
+    def >>>>(offset: Long): Byte = ((0xff & self.toInt) >>> offset.toInt).toByte
+
+    def <<<<(offset: Long): Byte = ((0xff & self.toInt) << offset.toInt).toByte
+
+    def ||||(that: Byte): Byte = (self | that).toByte
+  }
+
   implicit class LongBitArrayOps_2s8EdpV(val array: Array[Long]) extends AnyVal {
     final def setAtIndex(i: Long, v: Long): Unit = array(i.toInt) = v
 
@@ -118,6 +126,39 @@ package object syntax {
         getAtIndex(i)
       } else {
         val p = 16 - o
+
+        getAtIndex(i + 0) <<<< o |||| getAtIndex(i + 1) >>>> p
+      }
+    }
+  }
+
+  implicit class ByteBitArrayOps_2s8EdpV(val array: Array[Byte]) extends AnyVal {
+    final def setAtIndex(i: Long, v: Byte): Unit = array(i.toInt) = v
+
+    final def getAtIndex(i: Long): Byte = array(i.toInt)
+
+    final def short(n: Long, v: Put[Byte]): Unit = {
+      val i = n / 8
+      val o = n % 8
+
+      if (o == 0) {
+        setAtIndex(i, v.value)
+      } else {
+        val p = 8 - o
+
+        setAtIndex(i + 0, getAtIndex(i + 0) >>>> p <<<< p |||| v.value >>>> o)
+        setAtIndex(i + 1, getAtIndex(i + 1) <<<< o >>>> o |||| v.value <<<< p)
+      }
+    }
+
+    final def short(n: Long): Byte = {
+      val i = n / 8
+      val o = n % 8
+
+      if (o == 0) {
+        getAtIndex(i)
+      } else {
+        val p = 8 - o
 
         getAtIndex(i + 0) <<<< o |||| getAtIndex(i + 1) >>>> p
       }
