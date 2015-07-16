@@ -4,24 +4,33 @@ import org.scalacheck.{Arbitrary, Gen}
 import org.specs2.ScalaCheck
 import org.specs2.mutable.Specification
 
+import scala.util.Random
+
 class ByteBitArraySpec extends Specification with ScalaCheck {
   case class Offset(value: Long)
 
   implicit val arbitraryOffset = Arbitrary[Offset](Gen.choose(0L, 128L).map(Offset))
 
-  "Values that are set can be retrieved again" in {
-    prop { (v: Byte, offset: Offset) =>
-      val buffer = new Array[Byte](130)
+  def arbitraryBytes(size: Int) = Arbitrary[Array[Byte]] {
+    Gen.wrap(Gen.listOfN(size, Gen.wrap(Gen.const(Random.nextInt.toByte))).map(_.toArray))
+  }
+
+  def arbitraryShorts(size: Int) = Arbitrary[Array[Short]] {
+    Gen.wrap(Gen.listOfN(size, Gen.wrap(Gen.const(Random.nextInt.toShort))).map(_.toArray))
+  }
+
+  "Bytes that are set can be retrieved again" in {
+    prop { (v: Byte, offset: Offset, buffer: Array[Byte]) =>
       buffer.byte(offset.value, Put(v))
       buffer.byte(offset.value) ==== v
-    }
+    }.setGen3(arbitraryBytes(130).arbitrary)
   }
 
   "Shorts that are set can be retrieved again" in {
-    prop { (v: Short, offset: Offset) =>
-      val buffer = new Array[Short](10)
+    prop { (v: Short, offset: Offset, buffer: Array[Short]) =>
+      println(buffer.toList)
       buffer.short(offset.value, Put(v))
       buffer.short(offset.value) ==== v
-    }
+    }.setGen3(arbitraryShorts(65).arbitrary)
   }
 }
