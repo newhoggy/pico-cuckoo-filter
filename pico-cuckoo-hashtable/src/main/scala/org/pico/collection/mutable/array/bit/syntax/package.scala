@@ -137,7 +137,7 @@ package object syntax {
 
     final def getAtIndex(i: Long): Byte = array(i.toInt)
 
-    final def short(n: Long, v: Put[Byte]): Unit = {
+    final def byte(n: Long, v: Put[Byte]): Unit = {
       val i = n / 8
       val o = n % 8
 
@@ -151,7 +151,7 @@ package object syntax {
       }
     }
 
-    final def short(n: Long): Byte = {
+    final def byte(n: Long): Byte = {
       val i = n / 8
       val o = n % 8
 
