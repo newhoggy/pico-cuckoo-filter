@@ -39,8 +39,8 @@ package object syntax {
       } else {
         val p = 64 - o
 
-        setAtIndex(i + 0, getAtIndex(i + 0) >>>> p <<<< p | (v.value >>>> o))
-        setAtIndex(i + 1, getAtIndex(i + 1) <<<< o >>>> o | (v.value <<<< p))
+        setAtIndex(i + 0, getAtIndex(i + 0) >>>> p <<<< p |||| v.value >>>> o)
+        setAtIndex(i + 1, getAtIndex(i + 1) <<<< o >>>> o |||| v.value <<<< p)
       }
     }
 
@@ -72,8 +72,8 @@ package object syntax {
       } else {
         val p = 32 - o
 
-        setAtIndex(i + 0, getAtIndex(i + 0) >>>> p <<<< p | (v.value >>>> o))
-        setAtIndex(i + 1, getAtIndex(i + 1) <<<< o >>>> o | (v.value <<<< p))
+        setAtIndex(i + 0, getAtIndex(i + 0) >>>> p <<<< p |||| v.value >>>> o)
+        setAtIndex(i + 1, getAtIndex(i + 1) <<<< o >>>> o |||| v.value <<<< p)
       }
     }
 
@@ -105,8 +105,8 @@ package object syntax {
       } else {
         val p = 16 - o
 
-        setAtIndex(i + 0, (getAtIndex(i + 0) >>>> p <<<< p | (v.value >>>> o)).toShort)
-        setAtIndex(i + 1, (getAtIndex(i + 1) <<<< o >>>> o | (v.value <<<< p)).toShort)
+        setAtIndex(i + 0, getAtIndex(i + 0) >>>> p <<<< p |||| v.value >>>> o)
+        setAtIndex(i + 1, getAtIndex(i + 1) <<<< o >>>> o |||| v.value <<<< p)
       }
     }
 
