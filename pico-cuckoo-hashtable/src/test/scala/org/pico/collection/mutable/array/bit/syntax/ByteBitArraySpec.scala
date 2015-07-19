@@ -21,16 +21,21 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
 
   "Bytes that are set can be retrieved again" in {
     prop { (v: Byte, offset: Offset, buffer: Array[Byte]) =>
+      buffer.size ==== 130
+      offset.value must be_>=(0L)
+      offset.value must be_<(128L)
       buffer.byte(offset.value, Put(v))
       buffer.byte(offset.value) ==== v
-    }.setGen3(arbitraryBytes(130).arbitrary)
+    }.setArbitrary3(arbitraryBytes(130))
   }
 
   "Shorts that are set can be retrieved again" in {
     prop { (v: Short, offset: Offset, buffer: Array[Short]) =>
-      println(buffer.toList)
+      buffer.size ==== 65
+      offset.value must be_>=(0L)
+      offset.value must be_<(128L)
       buffer.short(offset.value, Put(v))
       buffer.short(offset.value) ==== v
-    }.setGen3(arbitraryShorts(65).arbitrary)
+    }.setArbitrary3(arbitraryShorts(65))
   }
 }
