@@ -233,5 +233,40 @@ package object syntax {
 
       aa |||| bb |||| cc
     }
+
+    final def int(i: Long, v: Put[Int]): Unit = {
+      val b = i / 8
+      val o = i % 8
+      val n = o - 8
+      val p = o + 8
+      val q = o + 16
+      val r = o + 24
+
+      println(s"int($i, $v: ${v.value.hex})")
+
+      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| (v.value >>>> r).toByte)
+      setAtIndex(b + 1,                                      (v.value >>>> q).toByte)
+      setAtIndex(b + 2,                                      (v.value >>>> p).toByte)
+      setAtIndex(b + 3,                                      (v.value >>>> o).toByte)
+      setAtIndex(b + 4, getAtIndex(b + 4) <<<< o >>>> o |||| (v.value >>>> n).toByte)
+    }
+
+
+    final def int(i: Long): Int = {
+      val b = i / 8
+      val o = i % 8
+      val n = o - 8
+      val p = o + 8
+      val q = o + 16
+      val r = o + 24
+
+      val aa = (getAtIndex(b + 0).toInt & 0xff) <<<< r
+      val bb = (getAtIndex(b + 1).toInt & 0xff) <<<< q
+      val cc = (getAtIndex(b + 2).toInt & 0xff) <<<< p
+      val dd = (getAtIndex(b + 3).toInt & 0xff) <<<< o
+      val ee = (getAtIndex(b + 4).toInt & 0xff) <<<< n
+
+      aa |||| bb |||| cc |||| dd |||| ee
+    }
   }
 }
