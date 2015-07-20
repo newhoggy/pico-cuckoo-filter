@@ -73,6 +73,30 @@ package object syntax {
 
       oo |||| nn
     }
+
+    final def int(i: Long, v: Put[Int]): Unit = {
+      val b = i / 16
+      val o = i % 16
+      val n = o - 16
+      val p = o + 16
+
+      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| (v.value >>>> p).toShort)
+      setAtIndex(b + 1,                                      (v.value >>>> o).toShort)
+      setAtIndex(b + 2, getAtIndex(b + 2) <<<< o >>>> o |||| (v.value >>>> n).toShort)
+    }
+
+    final def int(i: Long): Int = {
+      val b = i / 16
+      val o = i % 16
+      val n = o - 16
+      val p = o + 16
+
+      val pp = getAtIndex(b + 0).uint <<<< p
+      val oo = getAtIndex(b + 1).uint <<<< o
+      val nn = getAtIndex(b + 2).uint <<<< n
+
+      pp |||| oo |||| nn
+    }
   }
 
   implicit class ByteBitArrayOps_2s8EdpV(val array: Array[Byte]) extends AnyVal {
