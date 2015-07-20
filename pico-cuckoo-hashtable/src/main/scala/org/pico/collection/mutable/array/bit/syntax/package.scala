@@ -68,7 +68,10 @@ package object syntax {
       val o = i % 16
       val n = o - 16
 
-      getAtIndex(b + 0) <<<< o |||| getAtIndex(b + 1) <<<< n
+      val oo = getAtIndex(b + 0) <<<< o
+      val nn = getAtIndex(b + 1) <<<< n
+
+      oo |||| nn
     }
   }
 
@@ -112,11 +115,11 @@ package object syntax {
       val n = o - 8
       val p = o + 8
 
-      val aa = getAtIndex(b + 0).ushort <<<< p
-      val bb = getAtIndex(b + 1).ushort <<<< o
-      val cc = getAtIndex(b + 2).ushort <<<< n
+      val pp = getAtIndex(b + 0).ushort <<<< p
+      val oo = getAtIndex(b + 1).ushort <<<< o
+      val nn = getAtIndex(b + 2).ushort <<<< n
 
-      aa |||| bb |||| cc
+      pp |||| oo |||| nn
     }
 
     final def int(i: Long, v: Put[Int]): Unit = {
@@ -142,13 +145,13 @@ package object syntax {
       val q = o + 16
       val r = o + 24
 
-      val aa = getAtIndex(b + 0).uint <<<< r
-      val bb = getAtIndex(b + 1).uint <<<< q
-      val cc = getAtIndex(b + 2).uint <<<< p
-      val dd = getAtIndex(b + 3).uint <<<< o
-      val ee = getAtIndex(b + 4).uint <<<< n
+      val rr = getAtIndex(b + 0).uint <<<< r
+      val qq = getAtIndex(b + 1).uint <<<< q
+      val pp = getAtIndex(b + 2).uint <<<< p
+      val oo = getAtIndex(b + 3).uint <<<< o
+      val nn = getAtIndex(b + 4).uint <<<< n
 
-      aa |||| bb |||| cc |||| dd |||| ee
+      rr |||| qq |||| pp |||| oo |||| nn
     }
 
     final def long(i: Long, value: Put[Long]): Unit = {
@@ -186,17 +189,17 @@ package object syntax {
       val u = o + 48
       val v = o + 56
 
-      val aa = getAtIndex(b + 0).ulong <<<< v
-      val bb = getAtIndex(b + 1).ulong <<<< u
-      val cc = getAtIndex(b + 2).ulong <<<< t
-      val dd = getAtIndex(b + 3).ulong <<<< s
-      val ee = getAtIndex(b + 4).ulong <<<< r
-      val ff = getAtIndex(b + 5).ulong <<<< q
-      val gg = getAtIndex(b + 6).ulong <<<< p
-      val hh = getAtIndex(b + 7).ulong <<<< o
-      val ii = getAtIndex(b + 8).ulong <<<< n
+      val vv = getAtIndex(b + 0).ulong <<<< v
+      val uu = getAtIndex(b + 1).ulong <<<< u
+      val tt = getAtIndex(b + 2).ulong <<<< t
+      val ss = getAtIndex(b + 3).ulong <<<< s
+      val rr = getAtIndex(b + 4).ulong <<<< r
+      val qq = getAtIndex(b + 5).ulong <<<< q
+      val pp = getAtIndex(b + 6).ulong <<<< p
+      val oo = getAtIndex(b + 7).ulong <<<< o
+      val nn = getAtIndex(b + 8).ulong <<<< n
 
-      aa |||| bb |||| cc |||| dd |||| ee |||| ff |||| gg |||| hh |||| ii
+      vv |||| uu |||| tt |||| ss |||| rr |||| qq |||| pp |||| oo |||| nn
     }
   }
 }
