@@ -7,8 +7,8 @@ import org.specs2.mutable.Specification
 
 class ByteBitArraySpec extends Specification with ScalaCheck {
   "Bytes that are set can be retrieved again" in {
-    prop { (v: Byte, offset: Long) =>
-      val buffer = Array.fill(130)(0.toByte)
+    prop { (v: Byte, offset: Long, wallpaper: Byte) =>
+      val buffer = Array.fill(130)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
       buffer.byte(offset, Put(v))
@@ -17,8 +17,8 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Shorts that are set can be retrieved again" in {
-    prop { (v: Short, offset: Long) =>
-      val buffer = Array.fill(130)(0.toByte)
+    prop { (v: Short, offset: Long, wallpaper: Byte) =>
+      val buffer = Array.fill(130)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
       buffer.short(offset, Put(v))
