@@ -1,5 +1,7 @@
 package org.pico.collection.mutable.array.bit
 
+import org.pico.twiddle.syntax._
+
 package object syntax {
   implicit class LongOps_2s8EdpV(val self: Long) extends AnyVal {
     def >>>>(offset: Long): Long = {
@@ -219,9 +221,10 @@ package object syntax {
 
         setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| (v.value >>>> p).toByte)
         setAtIndex(b + 1,                                      (v.value >>>> o).toByte)
-        setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| (v.value >>>> n).toByte)
+        setAtIndex(b + 2, getAtIndex(b + 2) <<<< o >>>> o |||| (v.value >>>> n).toByte)
       }
     }
+
 
     final def short(i: Long): Short = {
       val b = i / 8
@@ -233,7 +236,11 @@ package object syntax {
         val n = o - 8
         val p = o + 8
 
-        getAtIndex(b + 0) <<<< p |||| getAtIndex(b + 1) <<<< o |||| getAtIndex(b + 2) <<<< n
+        val aa = (getAtIndex(b + 0) & 0xff).toShort <<<< p
+        val bb = (getAtIndex(b + 1) & 0xff).toShort <<<< o
+        val cc = (getAtIndex(b + 2) & 0xff).toShort <<<< n
+
+        aa |||| bb |||| cc
       }
     }
   }
