@@ -1,19 +1,15 @@
 package org.pico.collection.mutable.array.bit.syntax
 
-import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Gen
 import org.specs2.ScalaCheck
 import org.specs2.mutable.Specification
 
 class ShortBitArraySpec extends Specification with ScalaCheck {
-  case class Offset(value: Long)
-
-  implicit val arbitraryOffset = Arbitrary[Offset](Gen.choose(0L, 128L).map(Offset))
-
   "Values that are set can be retrieved again" in {
-    prop { (v: Short, offset: Offset) =>
+    prop { (v: Short, offset: Long) =>
       val buffer = new Array[Short](10)
-      buffer.short(offset.value, Put(v))
-      buffer.short(offset.value) ==== v
-    }
+      buffer.short(offset, Put(v))
+      buffer.short(offset) ==== v
+    }.setGen2(Gen.choose(0L, 128L))
   }
 }
