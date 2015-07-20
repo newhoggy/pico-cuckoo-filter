@@ -212,36 +212,26 @@ package object syntax {
       val b = i / 8
       val o = i % 8
 
-      if (o == 0) {
-        setAtIndex(b + 0, (v.value >>>> 8).toByte)
-        setAtIndex(b + 1, (v.value >>>> 0).toByte)
-      } else {
-        val n = o - 8
-        val p = o + 8
+      val n = o - 8
+      val p = o + 8
 
-        setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| (v.value >>>> p).toByte)
-        setAtIndex(b + 1,                                      (v.value >>>> o).toByte)
-        setAtIndex(b + 2, getAtIndex(b + 2) <<<< o >>>> o |||| (v.value >>>> n).toByte)
-      }
+      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| (v.value >>>> p).toByte)
+      setAtIndex(b + 1,                                      (v.value >>>> o).toByte)
+      setAtIndex(b + 2, getAtIndex(b + 2) <<<< o >>>> o |||| (v.value >>>> n).toByte)
     }
 
 
     final def short(i: Long): Short = {
       val b = i / 8
       val o = i % 8
+      val n = o - 8
+      val p = o + 8
 
-      if (o == 0) {
-        (getAtIndex(b + 0) <<<< 8 | getAtIndex(b + 1) <<<< 0).toShort
-      } else {
-        val n = o - 8
-        val p = o + 8
+      val aa = (getAtIndex(b + 0) & 0xff).toShort <<<< p
+      val bb = (getAtIndex(b + 1) & 0xff).toShort <<<< o
+      val cc = (getAtIndex(b + 2) & 0xff).toShort <<<< n
 
-        val aa = (getAtIndex(b + 0) & 0xff).toShort <<<< p
-        val bb = (getAtIndex(b + 1) & 0xff).toShort <<<< o
-        val cc = (getAtIndex(b + 2) & 0xff).toShort <<<< n
-
-        aa |||| bb |||| cc
-      }
+      aa |||| bb |||| cc
     }
   }
 }
