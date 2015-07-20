@@ -97,6 +97,39 @@ package object syntax {
 
       pp |||| oo |||| nn
     }
+
+
+    final def long(i: Long, v: Put[Long]): Unit = {
+      val b = i / 16
+      val o = i % 16
+      val n = o - 16
+      val p = o + 16
+      val q = o + 32
+      val r = o + 48
+
+      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| (v.value >>>> r).toShort)
+      setAtIndex(b + 1,                                      (v.value >>>> q).toShort)
+      setAtIndex(b + 2,                                      (v.value >>>> p).toShort)
+      setAtIndex(b + 3,                                      (v.value >>>> o).toShort)
+      setAtIndex(b + 4, getAtIndex(b + 4) <<<< o >>>> o |||| (v.value >>>> n).toShort)
+    }
+
+    final def long(i: Long): Long = {
+      val b = i / 16
+      val o = i % 16
+      val n = o - 16
+      val p = o + 16
+      val q = o + 32
+      val r = o + 48
+
+      val rr = getAtIndex(b + 0).ulong <<<< r
+      val qq = getAtIndex(b + 1).ulong <<<< q
+      val pp = getAtIndex(b + 2).ulong <<<< p
+      val oo = getAtIndex(b + 3).ulong <<<< o
+      val nn = getAtIndex(b + 4).ulong <<<< n
+
+      rr |||| qq |||| pp |||| oo |||| nn
+    }
   }
 
   implicit class ByteBitArrayOps_2s8EdpV(val array: Array[Byte]) extends AnyVal {
