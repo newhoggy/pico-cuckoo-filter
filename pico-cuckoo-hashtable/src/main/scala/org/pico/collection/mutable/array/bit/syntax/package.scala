@@ -112,9 +112,9 @@ package object syntax {
       val n = o - 8
       val p = o + 8
 
-      val aa = (getAtIndex(b + 0) & 0xff).toShort <<<< p
-      val bb = (getAtIndex(b + 1) & 0xff).toShort <<<< o
-      val cc = (getAtIndex(b + 2) & 0xff).toShort <<<< n
+      val aa = getAtIndex(b + 0).ushort <<<< p
+      val bb = getAtIndex(b + 1).ushort <<<< o
+      val cc = getAtIndex(b + 2).ushort <<<< n
 
       aa |||| bb |||| cc
     }
@@ -142,11 +142,11 @@ package object syntax {
       val q = o + 16
       val r = o + 24
 
-      val aa = (getAtIndex(b + 0).toInt & 0xff) <<<< r
-      val bb = (getAtIndex(b + 1).toInt & 0xff) <<<< q
-      val cc = (getAtIndex(b + 2).toInt & 0xff) <<<< p
-      val dd = (getAtIndex(b + 3).toInt & 0xff) <<<< o
-      val ee = (getAtIndex(b + 4).toInt & 0xff) <<<< n
+      val aa = getAtIndex(b + 0).uint <<<< r
+      val bb = getAtIndex(b + 1).uint <<<< q
+      val cc = getAtIndex(b + 2).uint <<<< p
+      val dd = getAtIndex(b + 3).uint <<<< o
+      val ee = getAtIndex(b + 4).uint <<<< n
 
       aa |||| bb |||| cc |||| dd |||| ee
     }
