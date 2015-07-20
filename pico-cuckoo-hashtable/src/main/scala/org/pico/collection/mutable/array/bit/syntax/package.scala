@@ -11,28 +11,18 @@ package object syntax {
     final def long(i: Long, v: Put[Long]): Unit = {
       val b = i / 64
       val o = i % 64
+      val n = 64 - o
 
-      if (o == 0) {
-        setAtIndex(b, v.value)
-      } else {
-        val n = 64 - o
-
-        setAtIndex(b + 0, getAtIndex(b + 0) >>>> n <<<< n |||| v.value >>>> o)
-        setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.value <<<< n)
-      }
+      setAtIndex(b + 0, getAtIndex(b + 0) >>>> n <<<< n |||| v.value >>>> o)
+      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.value <<<< n)
     }
 
     final def long(i: Long): Long = {
       val b = i / 64
       val o = i % 64
+      val n = 64 - o
 
-      if (o == 0) {
-        getAtIndex(b)
-      } else {
-        val n = 64 - o
-
-        getAtIndex(b + 0) << o |||| getAtIndex(b + 1) >>> n
-      }
+      getAtIndex(b + 0) << o |||| getAtIndex(b + 1) >>> n
     }
   }
 
@@ -44,28 +34,18 @@ package object syntax {
     final def int(i: Long, v: Put[Int]): Unit = {
       val b = i / 32
       val o = i % 32
+      val n = o - 32
 
-      if (o == 0) {
-        setAtIndex(b, v.value)
-      } else {
-        val n = o - 32
-
-        setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| v.value >>>> o)
-        setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.value >>>> n)
-      }
+      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| v.value >>>> o)
+      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.value >>>> n)
     }
 
     final def int(i: Long): Int = {
       val b = i / 32
       val o = i % 32
+      val n = o - 32
 
-      if (o == 0) {
-        getAtIndex(b)
-      } else {
-        val n = o - 32
-
-        getAtIndex(b + 0) <<<< o |||| getAtIndex(b + 1) <<<< n
-      }
+      getAtIndex(b + 0) <<<< o |||| getAtIndex(b + 1) <<<< n
     }
   }
 
