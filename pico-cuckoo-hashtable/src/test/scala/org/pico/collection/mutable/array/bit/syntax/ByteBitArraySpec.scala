@@ -1,16 +1,11 @@
 package org.pico.collection.mutable.array.bit.syntax
 
+import org.pico.collection.mutable.array.bit.syntax.gen._
 import org.scalacheck.Gen
 import org.specs2.ScalaCheck
 import org.specs2.mutable.Specification
 
-import scala.util.Random
-
 class ByteBitArraySpec extends Specification with ScalaCheck {
-  def genBytes(size: Int) = Gen.wrap(Gen.listOfN(size, Gen.wrap(Gen.const(Random.nextInt().toByte))).map(_.toArray))
-
-  def genShorts(size: Int) = Gen.wrap(Gen.listOfN(size, Gen.wrap(Gen.const(Random.nextInt().toShort))).map(_.toArray))
-
   "Bytes that are set can be retrieved again" in {
     prop { (v: Byte, offset: Long, buffer: Array[Byte]) =>
       buffer.length ==== 130
