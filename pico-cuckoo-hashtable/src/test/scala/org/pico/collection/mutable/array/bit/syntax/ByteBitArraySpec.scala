@@ -1,41 +1,33 @@
 package org.pico.collection.mutable.array.bit.syntax
 
-import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Gen
 import org.specs2.ScalaCheck
 import org.specs2.mutable.Specification
 
 import scala.util.Random
 
 class ByteBitArraySpec extends Specification with ScalaCheck {
-  case class Offset(value: Long)
+  def genBytes(size: Int) = Gen.wrap(Gen.listOfN(size, Gen.wrap(Gen.const(Random.nextInt().toByte))).map(_.toArray))
 
-  implicit val arbitraryOffset = Arbitrary[Offset](Gen.choose(0L, 128L).map(Offset))
-
-  def arbitraryBytes(size: Int) = Arbitrary[Array[Byte]] {
-    Gen.wrap(Gen.listOfN(size, Gen.wrap(Gen.const(Random.nextInt.toByte))).map(_.toArray))
-  }
-
-  def arbitraryShorts(size: Int) = Arbitrary[Array[Short]] {
-    Gen.wrap(Gen.listOfN(size, Gen.wrap(Gen.const(Random.nextInt.toShort))).map(_.toArray))
-  }
+  def genShorts(size: Int) = Gen.wrap(Gen.listOfN(size, Gen.wrap(Gen.const(Random.nextInt().toShort))).map(_.toArray))
 
   "Bytes that are set can be retrieved again" in {
-    prop { (v: Byte, offset: Offset, buffer: Array[Byte]) =>
-      buffer.size ==== 130
-      offset.value must be_>=(0L)
-      offset.value must be_<(128L)
-      buffer.byte(offset.value, Put(v))
-      buffer.byte(offset.value) ==== v
-    }.setArbitrary3(arbitraryBytes(130))
+    prop { (v: Byte, offset: Long, buffer: Array[Byte]) =>
+      buffer.length ==== 130
+      offset must be_>=(0L)
+      offset must be_<(128L)
+      buffer.byte(offset, Put(v))
+      buffer.byte(offset) ==== v
+    }.setGen3(genBytes(130)).setGen2(Gen.choose(0L, 127L))
   }
 
   "Shorts that are set can be retrieved again" in {
-    prop { (v: Short, offset: Offset, buffer: Array[Short]) =>
-      buffer.size ==== 65
-      offset.value must be_>=(0L)
-      offset.value must be_<(128L)
-      buffer.short(offset.value, Put(v))
-      buffer.short(offset.value) ==== v
-    }.setArbitrary3(arbitraryShorts(65))
+    prop { (v: Short, offset: Long, buffer: Array[Short]) =>
+      buffer.length ==== 65
+      offset must be_>=(0L)
+      offset must be_<(128L)
+      buffer.short(offset, Put(v))
+      buffer.short(offset) ==== v
+    }.setGen3(genShorts(65)).setGen2(Gen.choose(0L, 127L))
   }
 }
