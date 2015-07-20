@@ -186,15 +186,15 @@ package object syntax {
       val u = o + 48
       val v = o + 56
 
-      val aa = (getAtIndex(b + 0).toLong & 0xffL) <<<< v
-      val bb = (getAtIndex(b + 1).toLong & 0xffL) <<<< u
-      val cc = (getAtIndex(b + 2).toLong & 0xffL) <<<< t
-      val dd = (getAtIndex(b + 3).toLong & 0xffL) <<<< s
-      val ee = (getAtIndex(b + 4).toLong & 0xffL) <<<< r
-      val ff = (getAtIndex(b + 5).toLong & 0xffL) <<<< q
-      val gg = (getAtIndex(b + 6).toLong & 0xffL) <<<< p
-      val hh = (getAtIndex(b + 7).toLong & 0xffL) <<<< o
-      val ii = (getAtIndex(b + 8).toLong & 0xffL) <<<< n
+      val aa = getAtIndex(b + 0).ulong <<<< v
+      val bb = getAtIndex(b + 1).ulong <<<< u
+      val cc = getAtIndex(b + 2).ulong <<<< t
+      val dd = getAtIndex(b + 3).ulong <<<< s
+      val ee = getAtIndex(b + 4).ulong <<<< r
+      val ff = getAtIndex(b + 5).ulong <<<< q
+      val gg = getAtIndex(b + 6).ulong <<<< p
+      val hh = getAtIndex(b + 7).ulong <<<< o
+      val ii = getAtIndex(b + 8).ulong <<<< n
 
       aa |||| bb |||| cc |||| dd |||| ee |||| ff |||| gg |||| hh |||| ii
     }
