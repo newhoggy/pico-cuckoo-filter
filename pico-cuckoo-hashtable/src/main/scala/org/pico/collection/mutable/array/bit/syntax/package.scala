@@ -82,6 +82,40 @@ package object syntax {
 
     final def getAtIndex(i: Long): Int = array(i.toInt)
 
+    final def byte(i: Long, v: Put[Byte]): Unit = {
+      val b = i / 32
+      val o = i % 32
+      val n = 32 - o
+
+      setAtIndex(b + 0, getAtIndex(b + 0) >>>> n <<<< n |||| v.value.uint >>>> o)
+      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.value.uint <<<< n)
+    }
+
+    final def byte(i: Long): Byte = {
+      val b = i / 32
+      val o = i % 32
+      val n = 32 - o
+
+      (getAtIndex(b + 0) <<<< o |||| getAtIndex(b + 1) >>>> n).toByte
+    }
+
+    final def short(i: Long, v: Put[Short]): Unit = {
+      val b = i / 32
+      val o = i % 32
+      val n = o - 32
+
+      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| v.value >>>> o)
+      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.value >>>> n)
+    }
+
+    final def short(i: Long): Short = {
+      val b = i / 32
+      val o = i % 32
+      val n = o - 32
+
+      (getAtIndex(b + 0) <<<< o |||| getAtIndex(b + 1) <<<< n).toShort
+    }
+
     final def int(i: Long, v: Put[Int]): Unit = {
       val b = i / 32
       val o = i % 32
