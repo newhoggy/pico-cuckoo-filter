@@ -46,6 +46,11 @@ object Multibuild extends Build with Version {
     }
   }
 
+  lazy val `pico-twiddle` = Project(id = "pico-twiddle", base = file("pico-twiddle"))
+      .standard
+      .published
+      .specs2
+
   lazy val `pico-cuckoo-hashtable` = Project(id = "pico-cuckoo-hashtable", base = file("pico-cuckoo-hashtable"))
       .standard
       .published
