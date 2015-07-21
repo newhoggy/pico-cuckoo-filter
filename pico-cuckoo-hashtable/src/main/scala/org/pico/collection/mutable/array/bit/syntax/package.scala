@@ -47,6 +47,30 @@ package object syntax {
 
       getAtIndex(b + 0) <<<< o |||| getAtIndex(b + 1) <<<< n
     }
+
+    final def long(i: Long, v: Put[Long]): Unit = {
+      val b = i / 32
+      val o = i % 32
+      val n = o - 32
+      val p = o + 32
+
+      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| (v.value >>>> p).toInt)
+      setAtIndex(b + 1,                                      (v.value >>>> o).toInt)
+      setAtIndex(b + 2, getAtIndex(b + 2) <<<< o >>>> o |||| (v.value >>>> n).toInt)
+    }
+
+    final def long(i: Long): Long = {
+      val b = i / 32
+      val o = i % 32
+      val n = o - 32
+      val p = o + 32
+
+      val pp = getAtIndex(b + 0).ulong <<<< p
+      val oo = getAtIndex(b + 1).ulong <<<< o
+      val nn = getAtIndex(b + 2).ulong <<<< n
+
+      pp |||| oo |||| nn
+    }
   }
 
   implicit class ShortBitArrayOps_2s8EdpV(val array: Array[Short]) extends AnyVal {
@@ -97,7 +121,6 @@ package object syntax {
 
       pp |||| oo |||| nn
     }
-
 
     final def long(i: Long, v: Put[Long]): Unit = {
       val b = i / 16

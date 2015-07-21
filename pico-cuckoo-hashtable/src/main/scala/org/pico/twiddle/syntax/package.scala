@@ -32,10 +32,10 @@ package object syntax {
 
     def ushort: Short = self.toShort
     def uint: Int = self
-    def ulong: Long = 0xffffffff & self.toLong
+    def ulong: Long = 0xffffffffL & self.toLong
 
-    def >>>>(offset: Long): Int = if (offset > 0) self >>> offset.toInt else self <<  -offset.toInt
-    def <<<<(offset: Long): Int = if (offset > 0) self <<  offset.toInt else self >>> -offset.toInt
+    def >>>>(offset: Long): Int = if (offset > 0) (ulong >>> offset).toInt else (ulong <<  -offset).toInt
+    def <<<<(offset: Long): Int = if (offset > 0) (ulong <<  offset).toInt else (ulong >>> -offset).toInt
 
     def ||||(that: Int): Int = self | that
   }
