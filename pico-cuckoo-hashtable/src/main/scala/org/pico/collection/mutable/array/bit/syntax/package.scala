@@ -8,6 +8,23 @@ package object syntax {
 
     final def getAtIndex(i: Long): Long = array(i.toInt)
 
+    final def int(i: Long, v: Put[Int]): Unit = {
+      val b = i / 64
+      val o = i % 64
+      val n = 64 - o
+
+      setAtIndex(b + 0, getAtIndex(b + 0) >>>> n <<<< n |||| v.value.ulong >>>> o)
+      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.value.ulong <<<< n)
+    }
+
+    final def int(i: Long): Int = {
+      val b = i / 64
+      val o = i % 64
+      val n = 64 - o
+
+      (getAtIndex(b + 0) <<<< o |||| getAtIndex(b + 1) >>>> n).toInt
+    }
+
     final def long(i: Long, v: Put[Long]): Unit = {
       val b = i / 64
       val o = i % 64
@@ -22,7 +39,7 @@ package object syntax {
       val o = i % 64
       val n = 64 - o
 
-      getAtIndex(b + 0) << o |||| getAtIndex(b + 1) >>> n
+      getAtIndex(b + 0) <<<< o |||| getAtIndex(b + 1) >>>> n
     }
   }
 

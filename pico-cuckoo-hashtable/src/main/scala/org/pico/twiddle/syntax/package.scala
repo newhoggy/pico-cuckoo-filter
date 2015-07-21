@@ -47,8 +47,23 @@ package object syntax {
     def uint: Int = self.toInt
     def ulong: Long = self
 
-    def >>>>(offset: Long): Long = if (offset > 0) self >>> offset else self <<  -offset
-    def <<<<(offset: Long): Long = if (offset > 0) self <<  offset else self >>> -offset
+    def >>>>(offset: Long): Long = {
+      offset match {
+        case o if o >= 64 => 0L
+        case o if o > 0   => self >>> offset
+        case o if o > -64 => self << -offset
+        case _            => 0L
+      }
+    }
+
+    def <<<<(offset: Long): Long = {
+      offset match {
+        case o if o >= 64 => 0L
+        case o if o > 0   => self << offset
+        case o if o > -64 => self >>> -offset
+        case _            => 0L
+      }
+    }
 
     def ||||(that: Long): Long = self | that
   }

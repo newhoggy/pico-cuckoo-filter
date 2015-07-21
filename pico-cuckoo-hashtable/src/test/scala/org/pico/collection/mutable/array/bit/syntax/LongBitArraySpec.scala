@@ -5,11 +5,23 @@ import org.specs2.ScalaCheck
 import org.specs2.mutable.Specification
 
 class LongBitArraySpec extends Specification with ScalaCheck {
-  "Bytes that are set can be retrieved again" in {
-    prop { (v: Long, offset: Long) =>
-      val buffer = new Array[Long](5)
+  "Ints that are set can be retrieved again" in {
+    prop { (v: Int, offset: Long, wallpaper: Long) =>
+      val buffer = Array.fill(65)(wallpaper)
+      offset must be_>=(0L)
+      offset must be_<(128L)
+      buffer.int(offset, Put(v))
+      buffer.int(offset) ==== v
+    }.setGen2(Gen.choose(0L, 127L))
+  }
+
+  "Longs that are set can be retrieved again" in {
+    prop { (v: Long, offset: Long, wallpaper: Long) =>
+      val buffer = Array.fill(65)(wallpaper)
+      offset must be_>=(0L)
+      offset must be_<(128L)
       buffer.long(offset, Put(v))
       buffer.long(offset) ==== v
-    }.setGen2(Gen.choose(0L, 128L))
+    }.setGen2(Gen.choose(0L, 127L))
   }
 }
