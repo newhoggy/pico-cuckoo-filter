@@ -12,7 +12,6 @@ object MultiBuild extends Build with Version {
       self
           .settings(organization := "io.john-ky")
           .settings(scalacOptions := Seq("-feature", "-deprecation", "-unchecked", "-Xlint", "-Yrangepos", "-encoding", "utf8"))
-          .settings(scalacOptions in (console) += "-Yrangepos")
           .settings(resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases")
     }
 
