@@ -26,7 +26,7 @@ object MultiBuild extends Build with Version {
 
   lazy val `pico-twiddle` = Project(id = "pico-twiddle", base = file("pico-twiddle"))
       .standard.published
-      .libs(specs2_core)
+      .libs(specs2_core, specs2_scalacheck, scalacheck)
 
   lazy val `pico-cuckoo-hashtable` = Project(id = "pico-cuckoo-hashtable", base = file("pico-cuckoo-hashtable"))
       .standard.published
@@ -40,5 +40,5 @@ object MultiBuild extends Build with Version {
 
   lazy val root = Project(id = "all", base = file("."))
       .notPublished
-      .aggregate(`pico-cuckoo-hashtable`, `pico-cuckoo-filter`)
+      .aggregate(`pico-cuckoo-hashtable`, `pico-cuckoo-filter`, `pico-twiddle`)
 }

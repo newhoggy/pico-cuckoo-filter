@@ -1,22 +1,12 @@
-package org.pico.collection.mutable.array.bit.syntax
+package org.pico.twiddle.array.syntax
 
 import org.scalacheck.Gen
 import org.specs2.ScalaCheck
 import org.specs2.mutable.Specification
 
-class ShortBitArraySpec extends Specification with ScalaCheck {
+class IntBitArraySpec extends Specification with ScalaCheck {
   "Bytes that are set can be retrieved again" in {
-    prop { (v: Byte, offset: Long, wallpaper: Short) =>
-      val buffer = Array.fill(65)(wallpaper)
-      offset must be_>=(0L)
-      offset must be_<(128L)
-      buffer.int(offset, v)
-      buffer.int(offset) ==== v
-    }.setGen2(Gen.choose(0L, 127L))
-  }
-
-  "Shorts that are set can be retrieved again" in {
-    prop { (v: Short, offset: Long, wallpaper: Short) =>
+    prop { (v: Byte, offset: Long, wallpaper: Int) =>
       val buffer = Array.fill(65)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
@@ -26,7 +16,7 @@ class ShortBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Ints that are set can be retrieved again" in {
-    prop { (v: Int, offset: Long, wallpaper: Short) =>
+    prop { (v: Int, offset: Long, wallpaper: Int) =>
       val buffer = Array.fill(65)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
@@ -36,7 +26,7 @@ class ShortBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Longs that are set can be retrieved again" in {
-    prop { (v: Long, offset: Long, wallpaper: Short) =>
+    prop { (v: Long, offset: Long, wallpaper: Int) =>
       val buffer = Array.fill(65)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)

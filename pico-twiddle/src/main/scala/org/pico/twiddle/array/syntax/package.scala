@@ -1,4 +1,4 @@
-package org.pico.collection.mutable.array.bit
+package org.pico.twiddle.array
 
 import org.pico.twiddle.unsigned.syntax._
 
