@@ -23,3 +23,4 @@ case class U16(value: Short) extends AnyVal {
 
   @inline final def <<(offset: Byte): U16 = (u32 << offset).to_u16
 }
+

@@ -25,7 +25,3 @@ case class U8(value: Byte) extends AnyVal {
 
   @inline final def <<(offset: Byte): U8 = (u32 << offset).to_u8
 }
-
-object U8 {
-  def zero = U8(0)
-}

@@ -1,9 +1,9 @@
 package org.pico.twiddle.unsigned
 
 case class U64(value: Long) extends AnyVal {
-  def +(that: U64): U64 = U64(this.value + that.value)
+  @inline final def +(that: U64): U64 = U64(this.value + that.value)
 
-  def -(that: U64): U64 = U64(this.value - that.value)
+  @inline final def -(that: U64): U64 = U64(this.value - that.value)
 
   @inline final def to_u8: U8 = U8(value.toByte)
 
