@@ -1,7 +1,7 @@
 import sbt._
 import Keys._
 
-object Multibuild extends Build with Version {
+object MultiBuild extends Build with Version {
   val specs2_core       = "org.specs2"      %% "specs2-core"        % "3.6.2"   % "test"
   val specs2_scalacheck = "org.specs2"      %% "specs2-scalacheck"  % "3.6.2"   % "test"
   val scalacheck        = "org.scalacheck"  %% "scalacheck"         % "1.12.4"  % "test"
@@ -33,6 +33,7 @@ object Multibuild extends Build with Version {
       .standard.published
       .libs(scalaz_core)
       .libs(specs2_core, specs2_scalacheck, scalacheck)
+      .dependsOn(`pico-twiddle`)
 
   lazy val `pico-cuckoo-filter` = Project(id = "pico-cuckoo-filter", base = file("pico-cuckoo-filter"))
       .standard.published
