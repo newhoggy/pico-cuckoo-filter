@@ -8,13 +8,13 @@ package object syntax {
 
     final def getAtIndex(i: Long): Long = array(i.toInt)
 
-    final def byte(i: Long, v: Put[Byte]): Unit = {
+    final def byte(i: Long, v: Byte): Unit = {
       val b = i / 64
       val o = i % 64
       val n = 64 - o
 
-      setAtIndex(b + 0, getAtIndex(b + 0) >>>> n <<<< n |||| v.value.ulong >>>> o)
-      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.value.ulong <<<< n)
+      setAtIndex(b + 0, getAtIndex(b + 0) >>>> n <<<< n |||| v.ulong >>>> o)
+      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.ulong <<<< n)
     }
 
     final def byte(i: Long): Byte = {
@@ -25,13 +25,13 @@ package object syntax {
       (getAtIndex(b + 0) <<<< o |||| getAtIndex(b + 1) >>>> n).toByte
     }
 
-    final def short(i: Long, v: Put[Short]): Unit = {
+    final def short(i: Long, v: Short): Unit = {
       val b = i / 64
       val o = i % 64
       val n = 64 - o
 
-      setAtIndex(b + 0, getAtIndex(b + 0) >>>> n <<<< n |||| v.value.ulong >>>> o)
-      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.value.ulong <<<< n)
+      setAtIndex(b + 0, getAtIndex(b + 0) >>>> n <<<< n |||| v.ulong >>>> o)
+      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.ulong <<<< n)
     }
 
     final def short(i: Long): Short = {
@@ -42,13 +42,13 @@ package object syntax {
       (getAtIndex(b + 0) <<<< o |||| getAtIndex(b + 1) >>>> n).toShort
     }
 
-    final def int(i: Long, v: Put[Int]): Unit = {
+    final def int(i: Long, v: Int): Unit = {
       val b = i / 64
       val o = i % 64
       val n = 64 - o
 
-      setAtIndex(b + 0, getAtIndex(b + 0) >>>> n <<<< n |||| v.value.ulong >>>> o)
-      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.value.ulong <<<< n)
+      setAtIndex(b + 0, getAtIndex(b + 0) >>>> n <<<< n |||| v.ulong >>>> o)
+      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.ulong <<<< n)
     }
 
     final def int(i: Long): Int = {
@@ -59,13 +59,13 @@ package object syntax {
       (getAtIndex(b + 0) <<<< o |||| getAtIndex(b + 1) >>>> n).toInt
     }
 
-    final def long(i: Long, v: Put[Long]): Unit = {
+    final def long(i: Long, v: Long): Unit = {
       val b = i / 64
       val o = i % 64
       val n = 64 - o
 
-      setAtIndex(b + 0, getAtIndex(b + 0) >>>> n <<<< n |||| v.value >>>> o)
-      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.value <<<< n)
+      setAtIndex(b + 0, getAtIndex(b + 0) >>>> n <<<< n |||| v >>>> o)
+      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v <<<< n)
     }
 
     final def long(i: Long): Long = {
@@ -82,13 +82,13 @@ package object syntax {
 
     final def getAtIndex(i: Long): Int = array(i.toInt)
 
-    final def byte(i: Long, v: Put[Byte]): Unit = {
+    final def byte(i: Long, v: Byte): Unit = {
       val b = i / 32
       val o = i % 32
       val n = 32 - o
 
-      setAtIndex(b + 0, getAtIndex(b + 0) >>>> n <<<< n |||| v.value.uint >>>> o)
-      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.value.uint <<<< n)
+      setAtIndex(b + 0, getAtIndex(b + 0) >>>> n <<<< n |||| v.uint >>>> o)
+      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.uint <<<< n)
     }
 
     final def byte(i: Long): Byte = {
@@ -99,13 +99,13 @@ package object syntax {
       (getAtIndex(b + 0) <<<< o |||| getAtIndex(b + 1) >>>> n).toByte
     }
 
-    final def short(i: Long, v: Put[Short]): Unit = {
+    final def short(i: Long, v: Short): Unit = {
       val b = i / 32
       val o = i % 32
       val n = o - 32
 
-      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| v.value >>>> o)
-      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.value >>>> n)
+      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| v >>>> o)
+      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v >>>> n)
     }
 
     final def short(i: Long): Short = {
@@ -116,13 +116,13 @@ package object syntax {
       (getAtIndex(b + 0) <<<< o |||| getAtIndex(b + 1) <<<< n).toShort
     }
 
-    final def int(i: Long, v: Put[Int]): Unit = {
+    final def int(i: Long, v: Int): Unit = {
       val b = i / 32
       val o = i % 32
       val n = o - 32
 
-      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| v.value >>>> o)
-      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.value >>>> n)
+      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| v >>>> o)
+      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v >>>> n)
     }
 
     final def int(i: Long): Int = {
@@ -133,15 +133,15 @@ package object syntax {
       getAtIndex(b + 0) <<<< o |||| getAtIndex(b + 1) <<<< n
     }
 
-    final def long(i: Long, v: Put[Long]): Unit = {
+    final def long(i: Long, v: Long): Unit = {
       val b = i / 32
       val o = i % 32
       val n = o - 32
       val p = o + 32
 
-      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| (v.value >>>> p).toInt)
-      setAtIndex(b + 1,                                      (v.value >>>> o).toInt)
-      setAtIndex(b + 2, getAtIndex(b + 2) <<<< o >>>> o |||| (v.value >>>> n).toInt)
+      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| (v >>>> p).toInt)
+      setAtIndex(b + 1,                                      (v >>>> o).toInt)
+      setAtIndex(b + 2, getAtIndex(b + 2) <<<< o >>>> o |||| (v >>>> n).toInt)
     }
 
     final def long(i: Long): Long = {
@@ -163,13 +163,13 @@ package object syntax {
 
     final def getAtIndex(i: Long): Short = array(i.toInt)
 
-    final def byte(i: Long, v: Put[Byte]): Unit = {
+    final def byte(i: Long, v: Byte): Unit = {
       val b = i / 16
       val o = i % 16
       val n = o - 16
 
-      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| v.value.ushort >>>> o)
-      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.value.ushort >>>> n)
+      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| v.ushort >>>> o)
+      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.ushort >>>> n)
     }
 
     final def byte(i: Long): Byte = {
@@ -183,13 +183,13 @@ package object syntax {
       (oo |||| nn).toByte
     }
 
-    final def short(i: Long, v: Put[Short]): Unit = {
+    final def short(i: Long, v: Short): Unit = {
       val b = i / 16
       val o = i % 16
       val n = o - 16
 
-      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| v.value >>>> o)
-      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.value >>>> n)
+      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| v >>>> o)
+      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v >>>> n)
     }
 
     final def short(i: Long): Short = {
@@ -203,15 +203,15 @@ package object syntax {
       oo |||| nn
     }
 
-    final def int(i: Long, v: Put[Int]): Unit = {
+    final def int(i: Long, v: Int): Unit = {
       val b = i / 16
       val o = i % 16
       val n = o - 16
       val p = o + 16
 
-      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| (v.value >>>> p).toShort)
-      setAtIndex(b + 1,                                      (v.value >>>> o).toShort)
-      setAtIndex(b + 2, getAtIndex(b + 2) <<<< o >>>> o |||| (v.value >>>> n).toShort)
+      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| (v >>>> p).toShort)
+      setAtIndex(b + 1,                                      (v >>>> o).toShort)
+      setAtIndex(b + 2, getAtIndex(b + 2) <<<< o >>>> o |||| (v >>>> n).toShort)
     }
 
     final def int(i: Long): Int = {
@@ -227,7 +227,7 @@ package object syntax {
       pp |||| oo |||| nn
     }
 
-    final def long(i: Long, v: Put[Long]): Unit = {
+    final def long(i: Long, v: Long): Unit = {
       val b = i / 16
       val o = i % 16
       val n = o - 16
@@ -235,11 +235,11 @@ package object syntax {
       val q = o + 32
       val r = o + 48
 
-      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| (v.value >>>> r).toShort)
-      setAtIndex(b + 1,                                      (v.value >>>> q).toShort)
-      setAtIndex(b + 2,                                      (v.value >>>> p).toShort)
-      setAtIndex(b + 3,                                      (v.value >>>> o).toShort)
-      setAtIndex(b + 4, getAtIndex(b + 4) <<<< o >>>> o |||| (v.value >>>> n).toShort)
+      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| (v >>>> r).toShort)
+      setAtIndex(b + 1,                                      (v >>>> q).toShort)
+      setAtIndex(b + 2,                                      (v >>>> p).toShort)
+      setAtIndex(b + 3,                                      (v >>>> o).toShort)
+      setAtIndex(b + 4, getAtIndex(b + 4) <<<< o >>>> o |||| (v >>>> n).toShort)
     }
 
     final def long(i: Long): Long = {
@@ -265,13 +265,13 @@ package object syntax {
 
     final def getAtIndex(i: Long): Byte = array(i.toInt)
 
-    final def byte(i: Long, v: Put[Byte]): Unit = {
+    final def byte(i: Long, v: Byte): Unit = {
       val b = i / 8
       val o = i % 8
       val n = o - 8
 
-      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| v.value >>>> o)
-      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.value >>>> n)
+      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| v >>>> o)
+      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v >>>> n)
     }
 
     final def byte(i: Long): Byte = {
@@ -282,15 +282,15 @@ package object syntax {
       getAtIndex(b + 0) <<<< o |||| getAtIndex(b + 1) <<<< n
     }
 
-    final def short(i: Long, v: Put[Short]): Unit = {
+    final def short(i: Long, v: Short): Unit = {
       val b = i / 8
       val o = i % 8
       val n = o - 8
       val p = o + 8
 
-      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| (v.value >>>> p).toByte)
-      setAtIndex(b + 1,                                      (v.value >>>> o).toByte)
-      setAtIndex(b + 2, getAtIndex(b + 2) <<<< o >>>> o |||| (v.value >>>> n).toByte)
+      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| (v >>>> p).toByte)
+      setAtIndex(b + 1,                                      (v >>>> o).toByte)
+      setAtIndex(b + 2, getAtIndex(b + 2) <<<< o >>>> o |||| (v >>>> n).toByte)
     }
 
 
@@ -307,7 +307,7 @@ package object syntax {
       pp |||| oo |||| nn
     }
 
-    final def int(i: Long, v: Put[Int]): Unit = {
+    final def int(i: Long, v: Int): Unit = {
       val b = i / 8
       val o = i % 8
       val n = o - 8
@@ -315,11 +315,11 @@ package object syntax {
       val q = o + 16
       val r = o + 24
 
-      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| (v.value >>>> r).toByte)
-      setAtIndex(b + 1,                                      (v.value >>>> q).toByte)
-      setAtIndex(b + 2,                                      (v.value >>>> p).toByte)
-      setAtIndex(b + 3,                                      (v.value >>>> o).toByte)
-      setAtIndex(b + 4, getAtIndex(b + 4) <<<< o >>>> o |||| (v.value >>>> n).toByte)
+      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| (v >>>> r).toByte)
+      setAtIndex(b + 1,                                      (v >>>> q).toByte)
+      setAtIndex(b + 2,                                      (v >>>> p).toByte)
+      setAtIndex(b + 3,                                      (v >>>> o).toByte)
+      setAtIndex(b + 4, getAtIndex(b + 4) <<<< o >>>> o |||| (v >>>> n).toByte)
     }
 
     final def int(i: Long): Int = {
@@ -339,7 +339,7 @@ package object syntax {
       rr |||| qq |||| pp |||| oo |||| nn
     }
 
-    final def long(i: Long, value: Put[Long]): Unit = {
+    final def long(i: Long, value: Long): Unit = {
       val b = i / 8
       val o = i % 8
       val n = o - 8
@@ -351,15 +351,15 @@ package object syntax {
       val u = o + 48
       val v = o + 56
 
-      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| (value.value >>>> v).toByte)
-      setAtIndex(b + 1,                                      (value.value >>>> u).toByte)
-      setAtIndex(b + 2,                                      (value.value >>>> t).toByte)
-      setAtIndex(b + 3,                                      (value.value >>>> s).toByte)
-      setAtIndex(b + 4,                                      (value.value >>>> r).toByte)
-      setAtIndex(b + 5,                                      (value.value >>>> q).toByte)
-      setAtIndex(b + 6,                                      (value.value >>>> p).toByte)
-      setAtIndex(b + 7,                                      (value.value >>>> o).toByte)
-      setAtIndex(b + 8, getAtIndex(b + 8) <<<< o >>>> o |||| (value.value >>>> n).toByte)
+      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| (value >>>> v).toByte)
+      setAtIndex(b + 1,                                      (value >>>> u).toByte)
+      setAtIndex(b + 2,                                      (value >>>> t).toByte)
+      setAtIndex(b + 3,                                      (value >>>> s).toByte)
+      setAtIndex(b + 4,                                      (value >>>> r).toByte)
+      setAtIndex(b + 5,                                      (value >>>> q).toByte)
+      setAtIndex(b + 6,                                      (value >>>> p).toByte)
+      setAtIndex(b + 7,                                      (value >>>> o).toByte)
+      setAtIndex(b + 8, getAtIndex(b + 8) <<<< o >>>> o |||| (value >>>> n).toByte)
     }
 
     final def long(i: Long): Long = {

@@ -12,10 +12,10 @@ class AllBitArraySpec extends Specification with ScalaCheck {
       val b16 = new Array[Byte](128)
       val b08 = new Array[Byte](256)
 
-      b64.byte(offset, Put(v))
-      b32.byte(offset, Put(v))
-      b16.byte(offset, Put(v))
-      b08.byte(offset, Put(v))
+      b64.byte(offset, v)
+      b32.byte(offset, v)
+      b16.byte(offset, v)
+      b08.byte(offset, v)
 
       success
     }.setGen2(Gen.choose(0L, 127L))

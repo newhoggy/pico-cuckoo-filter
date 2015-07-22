@@ -10,7 +10,7 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
       val buffer = Array.fill(130)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
-      buffer.byte(offset, Put(v))
+      buffer.byte(offset, v)
       buffer.byte(offset) ==== v
     }.setGen2(Gen.choose(0L, 127L))
   }
@@ -20,7 +20,7 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
       val buffer = Array.fill(130)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
-      buffer.short(offset, Put(v))
+      buffer.short(offset, v)
       buffer.short(offset) ==== v
     }.setGen2(Gen.choose(0L, 127L))
   }
@@ -30,7 +30,7 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
       val buffer = Array.fill(130)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
-      buffer.int(offset, Put(v))
+      buffer.int(offset, v)
       buffer.int(offset) ==== v
     }.setGen2(Gen.choose(0L, 127L))
   }
@@ -40,7 +40,7 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
       val buffer = Array.fill(130)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
-      buffer.long(offset, Put(v))
+      buffer.long(offset, v)
       buffer.long(offset) ==== v
     }.setGen2(Gen.choose(0L, 127L))
   }
