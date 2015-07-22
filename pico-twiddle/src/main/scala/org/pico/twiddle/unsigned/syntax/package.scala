@@ -1,4 +1,4 @@
-package org.pico.twiddle
+package org.pico.twiddle.unsigned
 
 package object syntax {
   implicit class ByteOps_Ghg39HP(val self: Byte) extends AnyVal {

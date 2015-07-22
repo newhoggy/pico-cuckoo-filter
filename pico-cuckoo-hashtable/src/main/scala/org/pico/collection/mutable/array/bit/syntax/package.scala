@@ -1,6 +1,6 @@
 package org.pico.collection.mutable.array.bit
 
-import org.pico.twiddle.syntax._
+import org.pico.twiddle.unsigned.syntax._
 
 package object syntax {
   implicit class LongBitArrayOps_2s8EdpV(val array: Array[Long]) extends AnyVal {
