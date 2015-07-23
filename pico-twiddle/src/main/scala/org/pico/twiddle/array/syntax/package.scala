@@ -164,23 +164,39 @@ package object syntax {
     final def getAtIndex(i: Long): Short = array(i.toInt)
 
     final def byte(i: Long, v: Byte): Unit = {
-      val b = i / 16
+      val ai = i / 16
+      val bi = ai + 1
       val o = i % 16
-      val n = o - 16
+      val ars = o + 8
+      val als = 24 - ars
+      val brs = (o - 8) max 0
+      val bls = 24 - brs
 
-      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| v.ushort >>>> o)
-      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.ushort >>>> n)
+      val aw = getAtIndex(ai)
+      val bw = getAtIndex(bi)
+
+      val ax = aw <<<< ars >>>> ars |||| aw >>>> als <<<< als
+      val bx = bw <<<< brs >>>> brs |||| bw >>>> bls <<<< bls
+
+      val av = v.ushort >>>> (o - 8)
+      val bv = v.ushort >>>> (o - 24)
+
+      setAtIndex(ai, ax |||| av)
+      setAtIndex(bi, bx |||| bv)
     }
 
     final def byte(i: Long): Byte = {
-      val b = i / 16
+      val ai = i / 16
+      val bi = ai + 1
       val o = i % 16
-      val n = o - 16
+      val ars = o + 8
+      val brs = (o - 8) max 0
+      val aw = getAtIndex(ai)
+      val bw = getAtIndex(bi)
+      val ap = aw >>>> (16 - ars)
+      val bp = bw >>>> (16 - brs)
 
-      val oo = getAtIndex(b + 0) <<<< o
-      val nn = getAtIndex(b + 1) <<<< n
-
-      (oo |||| nn).toByte
+      ap.toByte |||| bp.toByte
     }
 
     final def short(i: Long, v: Short): Unit = {

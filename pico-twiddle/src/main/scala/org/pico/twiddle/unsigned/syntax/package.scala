@@ -21,8 +21,23 @@ package object syntax {
     def uint: Int = 0xffff & self.toInt
     def ulong: Long = 0xffff & self.toLong
 
-    def >>>>(offset: Long): Short = if (offset > 0) (uint >>> offset).toShort else (uint <<  -offset).toShort
-    def <<<<(offset: Long): Short = if (offset > 0) (uint <<  offset).toShort else (uint >>> -offset).toShort
+    def >>>>(offset: Long): Short = {
+      offset match {
+        case o if o >= 16 => 0.toShort
+        case o if o > 0   => (uint >>> offset).toShort
+        case o if o > -16 => (uint << -offset).toShort
+        case _            => 0.toShort
+      }
+    }
+
+    def <<<<(offset: Long): Short = {
+      offset match {
+        case o if o >= 16 => 0.toShort
+        case o if o > 0   => (uint <<    offset).toShort
+        case o if o > -16 => (uint >>>> -offset).toShort
+        case _            => 0.toShort
+      }
+    }
 
     def ||||(that: Short): Short = (self | that).toShort
   }
