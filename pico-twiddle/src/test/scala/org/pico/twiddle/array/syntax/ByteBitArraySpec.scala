@@ -1,5 +1,6 @@
 package org.pico.twiddle.array.syntax
 
+import org.pico.twiddle.syntax.anyVal._
 import org.scalacheck.Gen
 import org.specs2.ScalaCheck
 import org.specs2.mutable.Specification
@@ -52,12 +53,12 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
       val buffer = Array.fill(130)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
-      buffer.byte(offset + 8 * 0, u)
-      buffer.byte(offset + 8 * 2, w)
-      buffer.byte(offset + 8 * 1, v)
-      buffer.byte(offset + 8 * 0) ==== u
-      buffer.byte(offset + 8 * 2) ==== w
-      buffer.byte(offset + 8 * 1) ==== v
+      buffer.byte(offset + u.bitSize * 0, u)
+      buffer.byte(offset + w.bitSize * 2, w)
+      buffer.byte(offset + v.bitSize * 1, v)
+      buffer.byte(offset + u.bitSize * 0) ==== u
+      buffer.byte(offset + w.bitSize * 2) ==== w
+      buffer.byte(offset + v.bitSize * 1) ==== v
     }.setGen2(Gen.choose(0L, 127L))
   }
 
@@ -66,40 +67,40 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
       val buffer = Array.fill(130)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
-      buffer.short(offset + 16 * 0, u)
-      buffer.short(offset + 16 * 2, w)
-      buffer.short(offset + 16 * 1, v)
-      buffer.short(offset + 16 * 0) ==== u
-      buffer.short(offset + 16 * 2) ==== w
-      buffer.short(offset + 16 * 1) ==== v
+      buffer.short(offset + u.bitSize * 0, u)
+      buffer.short(offset + w.bitSize * 2, w)
+      buffer.short(offset + v.bitSize * 1, v)
+      buffer.short(offset + u.bitSize * 0) ==== u
+      buffer.short(offset + w.bitSize * 2) ==== w
+      buffer.short(offset + v.bitSize * 1) ==== v
     }.setGen2(Gen.choose(0L, 127L))
   }
 
-//  "Consecutive Ints that are set can be retrieved again" in {
-//    prop { (wallpaper: Byte, offset: Long, u: Int, v: Int, w: Int) =>
-//      val buffer = Array.fill(130)(wallpaper)
-//      offset must be_>=(0L)
-//      offset must be_<(128L)
-//      buffer.int(offset + 8 * 0, u)
-//      buffer.int(offset + 8 * 2, w)
-//      buffer.int(offset + 8 * 1, v)
-//      buffer.int(offset + 8 * 0) ==== u
-//      buffer.int(offset + 8 * 2) ==== w
-//      buffer.int(offset + 8 * 1) ==== v
-//    }.setGen2(Gen.choose(0L, 127L))
-//  }
-//
-//  "Consecutive Longs that are set can be retrieved again" in {
-//    prop { (wallpaper: Byte, offset: Long, u: Long, v: Long, w: Long) =>
-//      val buffer = Array.fill(130)(wallpaper)
-//      offset must be_>=(0L)
-//      offset must be_<(128L)
-//      buffer.long(offset + 8 * 0, u)
-//      buffer.long(offset + 8 * 2, w)
-//      buffer.long(offset + 8 * 1, v)
-//      buffer.long(offset + 8 * 0) ==== u
-//      buffer.long(offset + 8 * 2) ==== w
-//      buffer.long(offset + 8 * 1) ==== v
-//    }.setGen2(Gen.choose(0L, 127L))
-//  }
+  "Consecutive Ints that are set can be retrieved again" in {
+    prop { (wallpaper: Byte, offset: Long, u: Int, v: Int, w: Int) =>
+      val buffer = Array.fill(130)(wallpaper)
+      offset must be_>=(0L)
+      offset must be_<(128L)
+      buffer.int(offset + u.bitSize * 0, u)
+      buffer.int(offset + w.bitSize * 2, w)
+      buffer.int(offset + v.bitSize * 1, v)
+      buffer.int(offset + u.bitSize * 0) ==== u
+      buffer.int(offset + w.bitSize * 2) ==== w
+      buffer.int(offset + v.bitSize * 1) ==== v
+    }.setGen2(Gen.choose(0L, 127L))
+  }
+
+  "Consecutive Longs that are set can be retrieved again" in {
+    prop { (wallpaper: Byte, offset: Long, u: Long, v: Long, w: Long) =>
+      val buffer = Array.fill(130)(wallpaper)
+      offset must be_>=(0L)
+      offset must be_<(128L)
+      buffer.long(offset + u.bitSize * 0, u)
+      buffer.long(offset + w.bitSize * 2, w)
+      buffer.long(offset + v.bitSize * 1, v)
+      buffer.long(offset + u.bitSize * 0) ==== u
+      buffer.long(offset + w.bitSize * 2) ==== w
+      buffer.long(offset + v.bitSize * 1) ==== v
+    }.setGen2(Gen.choose(0L, 127L))
+  }
 }
