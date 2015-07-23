@@ -288,9 +288,13 @@ package object syntax {
       val n = o - 8
       val p = o + 8
 
-      setAtIndex(b + 0, getAtIndex(b + 0) <<<< n >>>> n |||| (v >>>> p).toByte)
-      setAtIndex(b + 1,                                      (v >>>> o).toByte)
-      setAtIndex(b + 2, getAtIndex(b + 2) <<<< o >>>> o |||| (v >>>> n).toByte)
+      val pp = getAtIndex(b + 0) <<<< n >>>> n |||| (v >>>> p).toByte
+      val oo =                                      (v >>>> o).toByte
+      val nn = getAtIndex(b + 2) <<<< o >>>> o |||| (v >>>> n).toByte
+
+      setAtIndex(b + 0, pp)
+      setAtIndex(b + 1, oo)
+      setAtIndex(b + 2, nn)
     }
 
 
