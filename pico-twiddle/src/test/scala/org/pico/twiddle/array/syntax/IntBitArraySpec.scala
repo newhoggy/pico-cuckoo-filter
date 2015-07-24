@@ -103,7 +103,7 @@ class IntBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Consecutive Bytes that are set on saturated wallpaper can be retrieved again" in {
-    for (offset <- 0L until 40L) {
+    for (offset <- 0L until 128L) {
       val wallpaper = -1
       val u = 0x42.toByte
       val buffer = Array.fill(130)(wallpaper)
@@ -115,7 +115,7 @@ class IntBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Consecutive Shorts that are set on saturated wallpaper can be retrieved again" in {
-    for (offset <- 0L until 40L) {
+    for (offset <- 0L until 128L) {
       val wallpaper = -1
       val u = 0x4002.toShort
       val buffer = Array.fill(130)(wallpaper)
