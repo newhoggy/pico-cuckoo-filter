@@ -111,8 +111,7 @@ package object syntax {
       val aw = getAtIndex(ai)
       val bw = getAtIndex(bi)
       val ap = aw >>>> (32 - ars)
-      val xx = -brs + 48
-      val bp = bw >>>> xx
+      val bp = bw >>>> (48 - brs)
 
       ap.toByte |||| bp.toByte
     }
