@@ -1,6 +1,7 @@
 package org.pico.twiddle.array
 
 import org.pico.twiddle.unsigned.syntax._
+import org.pico.twiddle.syntax.anyVal._
 
 package object syntax {
   implicit class LongBitArrayOps_2s8EdpV(val array: Array[Long]) extends AnyVal {
@@ -86,18 +87,15 @@ package object syntax {
       val ai = i / 32
       val bi = ai + 1
       val o = i % 32
-      val ars = o + 8
-      val als = 32 + 8 - ars
-      val brs = (o - 24) max 0
-      val bls = 32 + 8 - brs
-
+      val ars = o + v.bitSize
+      val als = 32 + v.bitSize - ars
+      val brs = (o - 32 + v.bitSize) max 0
+      val bls = 32 + v.bitSize - brs
       val aw = getAtIndex(ai)
       val bw = getAtIndex(bi)
-
       val ax = aw <<<< ars >>>> ars |||| aw >>>> als <<<< als
       val bx = bw <<<< brs >>>> brs |||| bw >>>> bls <<<< bls
-
-      val av = v.uint >>>> (o - 24)
+      val av = v.uint >>>> (o - 32 + v.bitSize)
       val bv = v.uint >>>> (o - 56)
 
       setAtIndex(ai, ax |||| av)
@@ -123,16 +121,16 @@ package object syntax {
       val ai = i / 32
       val bi = ai + 1
       val o = i % 32
-      val ars = o + 16
-      val als = 32 + 16 - ars
-      val brs = (o - 16) max 0
-      val bls = 32 + 16 - brs
+      val ars = o + v.bitSize
+      val als = 32 + v.bitSize - ars
+      val brs = (o - 32 + v.bitSize) max 0
+      val bls = 32 + v.bitSize - brs
       val aw = getAtIndex(ai)
       val bw = getAtIndex(bi)
       val ax = aw <<<< ars >>>> ars |||| aw >>>> als <<<< als
       val bx = bw <<<< brs >>>> brs |||| bw >>>> bls <<<< bls
-      val av = v.uint >>>> (o - 16)
-      val bv = v.uint >>>> (o - 48)
+      val av = v.uint >>>> (o - 32 + v.bitSize)
+      val bv = v.uint >>>> (o - 64 + v.bitSize)
 
       setAtIndex(ai, ax |||| av)
       setAtIndex(bi, bx |||| bv)
