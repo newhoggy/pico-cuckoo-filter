@@ -137,4 +137,16 @@ class LongBitArraySpec extends Specification with ScalaCheck {
 
     success
   }
+
+  "Consecutive Long that are set on saturated wallpaper can be retrieved again" in {
+    for (offset <- 0L until 128L) {
+      val wallpaper = -1L
+      val u = 0x4000000000000002L
+      val buffer = Array.fill(130)(wallpaper)
+      buffer.long(offset + u.bitSize * 0, u)
+      buffer.long(offset + u.bitSize * 0) ==== u
+    }
+
+    success
+  }
 }
