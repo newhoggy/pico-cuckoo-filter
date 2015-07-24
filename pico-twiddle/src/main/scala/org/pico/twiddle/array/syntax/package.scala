@@ -5,25 +5,43 @@ import org.pico.twiddle.syntax.anyVal._
 
 package object syntax {
   implicit class LongBitArrayOps_2s8EdpV(val array: Array[Long]) extends AnyVal {
+    @inline final def elemBitSize: Int = 64
+
     final def setAtIndex(i: Long, v: Long): Unit = array(i.toInt) = v
 
     final def getAtIndex(i: Long): Long = array(i.toInt)
 
     final def byte(i: Long, v: Byte): Unit = {
-      val b = i / 64
-      val o = i % 64
-      val n = 64 - o
+      val ai = i / elemBitSize
+      val bi = ai + 1
+      val o = i % elemBitSize
+      val ars = o + v.bitSize
+      val als = elemBitSize + v.bitSize - ars
+      val brs = (o - elemBitSize + v.bitSize) max 0
+      val bls = elemBitSize + v.bitSize - brs
+      val aw = getAtIndex(ai)
+      val bw = getAtIndex(bi)
+      val ax = aw <<<< ars >>>> ars |||| aw >>>> als <<<< als
+      val bx = bw <<<< brs >>>> brs |||| bw >>>> bls <<<< bls
+      val av = v.ulong >>>> (o + v.bitSize - elemBitSize * 1)
+      val bv = v.ulong >>>> (o + v.bitSize - elemBitSize * 2)
 
-      setAtIndex(b + 0, getAtIndex(b + 0) >>>> n <<<< n |||| v.ulong >>>> o)
-      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.ulong <<<< n)
+      setAtIndex(ai, ax |||| av)
+      setAtIndex(bi, bx |||| bv)
     }
 
     final def byte(i: Long): Byte = {
-      val b = i / 64
-      val o = i % 64
-      val n = 64 - o
-
-      (getAtIndex(b + 0) <<<< o |||| getAtIndex(b + 1) >>>> n).toByte
+      val ai = i / elemBitSize
+      val bi = ai + 1
+      val o = i % elemBitSize
+      val ars = o + 8
+      val brs = (o - 8) max 0
+      val aw = getAtIndex(ai)
+      val bw = getAtIndex(bi)
+      val ap = aw >>>> (64 - ars)
+      val bp = bw >>>> (112 - brs)
+      val v = ap.toByte |||| bp.toByte
+      v
     }
 
     final def short(i: Long, v: Short): Unit = {
@@ -79,33 +97,35 @@ package object syntax {
   }
 
   implicit class IntBitArrayOps_2s8EdpV(val array: Array[Int]) extends AnyVal {
+    @inline final def elemBitSize: Int = 32
+
     final def setAtIndex(i: Long, v: Int): Unit = array(i.toInt) = v
 
     final def getAtIndex(i: Long): Int = array(i.toInt)
 
     final def byte(i: Long, v: Byte): Unit = {
-      val ai = i / 32
+      val ai = i / elemBitSize
       val bi = ai + 1
-      val o = i % 32
+      val o = i % elemBitSize
       val ars = o + v.bitSize
-      val als = 32 + v.bitSize - ars
-      val brs = (o - 32 + v.bitSize) max 0
-      val bls = 32 + v.bitSize - brs
+      val als = elemBitSize + v.bitSize - ars
+      val brs = (o - elemBitSize + v.bitSize) max 0
+      val bls = elemBitSize + v.bitSize - brs
       val aw = getAtIndex(ai)
       val bw = getAtIndex(bi)
       val ax = aw <<<< ars >>>> ars |||| aw >>>> als <<<< als
       val bx = bw <<<< brs >>>> brs |||| bw >>>> bls <<<< bls
-      val av = v.uint >>>> (o - 32 + v.bitSize)
-      val bv = v.uint >>>> (o - 56)
+      val av = v.uint >>>> (o + v.bitSize - elemBitSize * 1)
+      val bv = v.uint >>>> (o + v.bitSize - elemBitSize * 2)
 
       setAtIndex(ai, ax |||| av)
       setAtIndex(bi, bx |||| bv)
     }
 
     final def byte(i: Long): Byte = {
-      val ai = i / 32
+      val ai = i / elemBitSize
       val bi = ai + 1
-      val o = i % 32
+      val o = i % elemBitSize
       val ars = o + 8
       val brs = (o - 8) max 0
       val aw = getAtIndex(ai)
@@ -117,28 +137,28 @@ package object syntax {
     }
 
     final def short(i: Long, v: Short): Unit = {
-      val ai = i / 32
+      val ai = i / elemBitSize
       val bi = ai + 1
-      val o = i % 32
+      val o = i % elemBitSize
       val ars = o + v.bitSize
-      val als = 32 + v.bitSize - ars
-      val brs = (o - 32 + v.bitSize) max 0
-      val bls = 32 + v.bitSize - brs
+      val als = elemBitSize + v.bitSize - ars
+      val brs = (o - elemBitSize + v.bitSize) max 0
+      val bls = elemBitSize + v.bitSize - brs
       val aw = getAtIndex(ai)
       val bw = getAtIndex(bi)
       val ax = aw <<<< ars >>>> ars |||| aw >>>> als <<<< als
       val bx = bw <<<< brs >>>> brs |||| bw >>>> bls <<<< bls
-      val av = v.uint >>>> (o - 32 + v.bitSize)
-      val bv = v.uint >>>> (o - 64 + v.bitSize)
+      val av = v.uint >>>> (o + v.bitSize - elemBitSize * 1)
+      val bv = v.uint >>>> (o + v.bitSize - elemBitSize * 2)
 
       setAtIndex(ai, ax |||| av)
       setAtIndex(bi, bx |||| bv)
     }
 
     final def short(i: Long): Short = {
-      val ai = i / 32
+      val ai = i / elemBitSize
       val bi = ai + 1
-      val o = i % 32
+      val o = i % elemBitSize
       val ars = o + 8
       val brs = (o - 8) max 0
       val aw = getAtIndex(ai)
