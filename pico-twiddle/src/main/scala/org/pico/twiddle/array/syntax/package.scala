@@ -79,21 +79,39 @@ package object syntax {
     }
 
     final def int(i: Long, v: Int): Unit = {
-      val b = i / 64
-      val o = i % 64
-      val n = 64 - o
+      val ai = i / elemBitSize
+      val bi = ai + 1
+      val o = i % elemBitSize
+      val ars = o + v.bitSize
+      val als = elemBitSize + v.bitSize - ars
+      val brs = (o - elemBitSize + v.bitSize) max 0
+      val bls = elemBitSize + v.bitSize - brs
+      val aw = getAtIndex(ai)
+      val bw = getAtIndex(bi)
+      val ax = aw <<<< ars >>>> ars |||| aw >>>> als <<<< als
+      val bx = bw <<<< brs >>>> brs |||| bw >>>> bls <<<< bls
+      val av = v.ulong >>>> (o + v.bitSize - elemBitSize * 1)
+      val bv = v.ulong >>>> (o + v.bitSize - elemBitSize * 2)
 
-      setAtIndex(b + 0, getAtIndex(b + 0) >>>> n <<<< n |||| v.ulong >>>> o)
-      setAtIndex(b + 1, getAtIndex(b + 1) <<<< o >>>> o |||| v.ulong <<<< n)
+      setAtIndex(ai, ax |||| av)
+      setAtIndex(bi, bx |||| bv)
     }
 
     final def int(i: Long): Int = {
-      val b = i / 64
-      val o = i % 64
-      val n = 64 - o
+      val ai = i / elemBitSize
+      val bi = ai + 1
+      val o = i % elemBitSize
+      val ars = o + 8
+      val brs = (o - 8) max 0
+      val aw = getAtIndex(ai)
+      val bw = getAtIndex(bi)
+      val ap = aw >>>> (40 - ars)
+      val bp = bw >>>> (88 - brs)
 
-      (getAtIndex(b + 0) <<<< o |||| getAtIndex(b + 1) >>>> n).toInt
+      val v = ap.toInt |||| bp.toInt
+      v
     }
+
 
     final def long(i: Long, v: Long): Unit = {
       val b = i / 64
