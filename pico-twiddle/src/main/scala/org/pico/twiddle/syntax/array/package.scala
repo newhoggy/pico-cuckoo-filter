@@ -1,10 +1,10 @@
-package org.pico.twiddle.array
+package org.pico.twiddle.syntax
 
 import org.pico.twiddle.unsigned.syntax._
 
 import scala.annotation.tailrec
 
-package object syntax {
+package object array {
   implicit class LongBitArrayOps_2s8EdpV(val array: Array[Long]) extends AnyVal {
     @inline final def elemBitSize: Int = 64
 

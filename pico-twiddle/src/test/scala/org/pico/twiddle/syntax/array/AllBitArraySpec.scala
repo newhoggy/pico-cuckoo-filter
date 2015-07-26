@@ -1,4 +1,4 @@
-package org.pico.twiddle.array.syntax
+package org.pico.twiddle.syntax.array
 
 import org.scalacheck.Gen
 import org.specs2.ScalaCheck

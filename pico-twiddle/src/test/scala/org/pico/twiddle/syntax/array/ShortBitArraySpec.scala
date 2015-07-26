@@ -1,34 +1,34 @@
-package org.pico.twiddle.array.syntax
+package org.pico.twiddle.syntax.array
 
 import org.pico.twiddle.syntax.anyVal._
 import org.scalacheck.Gen
 import org.specs2.ScalaCheck
 import org.specs2.mutable.Specification
 
-class ByteBitArraySpec extends Specification with ScalaCheck {
+class ShortBitArraySpec extends Specification with ScalaCheck {
   "Bytes that are set can be retrieved again" in {
-    prop { (v: Byte, offset: Long, wallpaper: Byte) =>
-      val buffer = Array.fill(130)(wallpaper)
+    prop { (v: Byte, offset: Long, wallpaper: Short) =>
+      val buffer = Array.fill(65)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
-      buffer.byte(offset, v)
-      buffer.byte(offset) ==== v
+      buffer.int(offset, v)
+      buffer.int(offset) ==== v
     }.setGen2(Gen.choose(0L, 127L))
   }
 
   "Shorts that are set can be retrieved again" in {
-    prop { (v: Short, offset: Long, wallpaper: Byte) =>
-      val buffer = Array.fill(130)(wallpaper)
+    prop { (v: Short, offset: Long, wallpaper: Short) =>
+      val buffer = Array.fill(65)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
-      buffer.short(offset, v)
-      buffer.short(offset) ==== v
+      buffer.int(offset, v)
+      buffer.int(offset) ==== v
     }.setGen2(Gen.choose(0L, 127L))
   }
 
   "Ints that are set can be retrieved again" in {
-    prop { (v: Int, offset: Long, wallpaper: Byte) =>
-      val buffer = Array.fill(130)(wallpaper)
+    prop { (v: Int, offset: Long, wallpaper: Short) =>
+      val buffer = Array.fill(65)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
       buffer.int(offset, v)
@@ -37,8 +37,8 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Longs that are set can be retrieved again" in {
-    prop { (v: Long, offset: Long, wallpaper: Byte) =>
-      val buffer = Array.fill(130)(wallpaper)
+    prop { (v: Long, offset: Long, wallpaper: Short) =>
+      val buffer = Array.fill(65)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
       buffer.long(offset, v)
@@ -47,7 +47,7 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Consecutive Bytes that are set can be retrieved again" in {
-    prop { (wallpaper: Byte, offset: Long, u: Byte, v: Byte, w: Byte) =>
+    prop { (wallpaper: Short, offset: Long, u: Byte, v: Byte, w: Byte) =>
       val buffer = Array.fill(130)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
@@ -61,7 +61,7 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Consecutive Shorts that are set can be retrieved again" in {
-    prop { (wallpaper: Byte, offset: Long, u: Short, v: Short, w: Short) =>
+    prop { (wallpaper: Short, offset: Long, u: Short, v: Short, w: Short) =>
       val buffer = Array.fill(130)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
@@ -75,7 +75,7 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Consecutive Ints that are set can be retrieved again" in {
-    prop { (wallpaper: Byte, offset: Long, u: Int, v: Int, w: Int) =>
+    prop { (wallpaper: Short, offset: Long, u: Int, v: Int, w: Int) =>
       val buffer = Array.fill(130)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
@@ -89,7 +89,7 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Consecutive Longs that are set can be retrieved again" in {
-    prop { (wallpaper: Byte, offset: Long, u: Long, v: Long, w: Long) =>
+    prop { (wallpaper: Short, offset: Long, u: Long, v: Long, w: Long) =>
       val buffer = Array.fill(130)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
@@ -104,7 +104,7 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
 
   "Consecutive Bytes that are set on saturated wallpaper can be retrieved again" in {
     for (offset <- 0L until 128L) {
-      val wallpaper = -1.toByte
+      val wallpaper = -1.toShort
       val u = 0x42.toByte
       val buffer = Array.fill(130)(wallpaper)
       buffer.byte(offset + u.bitSize * 0, u)
@@ -115,7 +115,7 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Consecutive Shorts that are set on saturated wallpaper can be retrieved again" in {
-    val wallpaper = -1.toByte
+    val wallpaper = -1.toShort
     val u = 0x4002.toShort
     for (o <- 0L until 128L) {
       val buffer = Array.fill(130)(wallpaper)
@@ -128,7 +128,7 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
 
   "Consecutive Int that are set on saturated wallpaper can be retrieved again" in {
     for (offset <- 0L until 128L) {
-      val wallpaper = -1.toByte
+      val wallpaper = -1.toShort
       val u = 0x40000002
       val buffer = Array.fill(130)(wallpaper)
       buffer.int(offset + u.bitSize * 0, u)
@@ -139,7 +139,7 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Consecutive Long that are set on saturated wallpaper can be retrieved again" in {
-    val wallpaper = -1.toByte
+    val wallpaper = -1.toShort
     val u = 0x4000000000000002L
     for (o <- 0L until 128L) {
       val p = o + u.bitSize
@@ -152,7 +152,7 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Consecutive Shorts that are set on saturated wallpaper can be retrieved again" in {
-    val wallpaper = -1.toByte
+    val wallpaper = -1.toShort
     val u = 0x4002.toShort
     for (o <- 0L until 128L) {
       val p = o + u.bitSize
@@ -167,7 +167,7 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Setting unsigned int of size 8 is equivalent to setting byte" in {
-    val wallpaper = -1.toByte
+    val wallpaper = -1.toShort
     val u = 0x42.toByte
 
     for (o <- 0L until 128L) {
@@ -180,7 +180,7 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Setting unsigned int of size 16 is equivalent to setting short" in {
-    val wallpaper = -1.toByte
+    val wallpaper = -1.toShort
     val u = 0x4002.toShort
 
     for (o <- 0L until 128L) {
@@ -193,7 +193,7 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Setting unsigned int of size 32 is equivalent to setting int" in {
-    val wallpaper = -1.toByte
+    val wallpaper = -1.toShort
     val u = 0x40000002
 
     for (o <- 0L until 128L) {
@@ -206,7 +206,7 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Setting unsigned int of size 64 is equivalent to setting long" in {
-    val wallpaper = -1.toByte
+    val wallpaper = -1.toShort
     val u = 0x4000000000000002L
 
     for (o <- 0L until 128L) {
