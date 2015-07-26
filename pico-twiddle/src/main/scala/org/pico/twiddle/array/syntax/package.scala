@@ -1,7 +1,6 @@
 package org.pico.twiddle.array
 
 import org.pico.twiddle.unsigned.syntax._
-import org.pico.twiddle.syntax.anyVal._
 
 import scala.annotation.tailrec
 
@@ -9,56 +8,21 @@ package object syntax {
   implicit class LongBitArrayOps_2s8EdpV(val array: Array[Long]) extends AnyVal {
     @inline final def elemBitSize: Int = 64
 
-    final def setAtIndex(i: Long, v: Long): Unit = array(i.toInt) = v
+    @inline final def setAtIndex(i: Long, v: Long): Unit = array(i.toInt) = v
 
-    final def getAtIndex(i: Long): Long = array(i.toInt)
+    @inline final def getAtIndex(i: Long): Long = array(i.toInt)
 
-    final def byte(i: Long, v: Byte): Unit = update(i, 8, v.ulong)
-    final def short(i: Long, v: Short): Unit = update(i, 16, v.ulong)
-    final def int(i: Long, v: Int): Unit = update(i, 32, v.ulong)
-    final def long(i: Long, v: Long): Unit = update(i, 64, v.ulong)
+    @inline final def byte(i: Long, v: Byte): Unit = update(i, 8, v.ulong)
+    @inline final def short(i: Long, v: Short): Unit = update(i, 16, v.ulong)
+    @inline final def int(i: Long, v: Int): Unit = update(i, 32, v.ulong)
+    @inline final def long(i: Long, v: Long): Unit = update(i, 64, v.ulong)
 
-    final def byte(i: Long): Byte = signed(i, 8).ubyte
+    @inline final def byte(i: Long): Byte = signed(i, 8).ubyte
+    @inline final def short(i: Long): Short = signed(i, 16).ushort
+    @inline final def int(i: Long): Int = signed(i, 32).uint
+    @inline final def long(i: Long): Long = signed(i, 64).ulong
 
-    final def short(i: Long): Short = {
-      val ai = i / elemBitSize
-      val bi = ai + 1
-      val o = i % elemBitSize
-      val ars = o + 8
-      val brs = (o - 8) max 0
-      val aw = getAtIndex(ai)
-      val bw = getAtIndex(bi)
-      val ap = aw >>>> (56 - ars)
-      val bp = bw >>>> (104 - brs)
-
-      val v = ap.toShort |||| bp.toShort
-      v
-    }
-
-    final def int(i: Long): Int = {
-      val ai = i / elemBitSize
-      val bi = ai + 1
-      val o = i % elemBitSize
-      val ars = o + 8
-      val brs = (o - 8) max 0
-      val aw = getAtIndex(ai)
-      val bw = getAtIndex(bi)
-      val ap = aw >>>> (40 - ars)
-      val bp = bw >>>> (88 - brs)
-
-      val v = ap.toInt |||| bp.toInt
-      v
-    }
-
-    final def long(i: Long): Long = {
-      val b = i / 64
-      val o = i % 64
-      val n = 64 - o
-
-      getAtIndex(b + 0) <<<< o |||| getAtIndex(b + 1) >>>> n
-    }
-
-    final def update(i: Long, size: Long, v: Long): Unit = {
+    @inline final def update(i: Long, size: Long, v: Long): Unit = {
       @tailrec
       def go(i: Long, size: Long, v: Long): Unit = {
         val b = i / elemBitSize
@@ -99,7 +63,7 @@ package object syntax {
       go(i, size, v)
     }
 
-    def signed(i: Long, size: Long): Long = {
+    @inline def signed(i: Long, size: Long): Long = {
       @tailrec
       def go(i: Long, size: Long, acc: Long): Long = {
         val b = i / elemBitSize
