@@ -330,6 +330,8 @@ package object syntax {
   }
 
   implicit class ShortBitArrayOps_2s8EdpV(val array: Array[Short]) extends AnyVal {
+    @inline final def elemBitSize: Int = 16
+
     final def setAtIndex(i: Long, v: Short): Unit = array(i.toInt) = v
 
     final def getAtIndex(i: Long): Short = array(i.toInt)
@@ -445,9 +447,52 @@ package object syntax {
 
       rr |||| qq |||| pp |||| oo |||| nn
     }
+
+    final def unsigned(i: Long, size: Long, v: Long): Unit = {
+      @tailrec
+      def go(i: Long, size: Long, v: Long): Unit = {
+        val b = i / elemBitSize
+        val o = i % elemBitSize
+        val p = elemBitSize - o
+
+        // offset:  |----------- o ----------| |------------------ p ---------------------|   |----------- o ----------| |------------------ p ---------------------|
+        // offset:                    |-ezis-| |-------------------------- size ------------------------------| |-ezis-|
+        // data:                      vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv   vvvvvvvv vvvvvvvV
+        // data:                               Yyyyyyyy yyyyyyyy yyyyyyyy yyyyyyyy yyyyyyyy   yyyyyyyy yyyyyyyy
+        // data:    Tttttttt tttttttt tttttttt uuuuuuuu uuuuuuuu uuuuuuuu uuuuuuuu uuuuuuuU   Wwwwwwww wwwwwwww xxxxxxxx xxxxxxxx xxxxxxxx xxxxxxxx xxxxxxxx xxxxxxxX
+        // data:    Eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeeE   Ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff fffffffF
+
+        // offset:           |----------- o ----------| |------------------ p ---------------------|
+        // offset:  |---------------ezis--------------| |------------ size ---------------|
+        // data:    vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvV
+        // data:                                        Yyyyyyyy yyyyyyyy yyyyyyyy yyyyyyyy
+        // data:             Tttttttt tttttttt tttttttt uuuuuuuu uuuuuuuu uuuuuuuu uuuuuuuu wwwwwwwW
+        // data:             Eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeeE
+
+        val ezis = elemBitSize - size
+        val e = getAtIndex(b + 0)
+        val y = v <<<< ezis
+        val t = e >>>> p <<<< p
+        val u = (y >>>> o).ushort
+        val w = e <<<< (o + size) >>>> (o + size)
+        val ee = t |||| u |||| w
+
+        setAtIndex(b + 0, ee)
+
+        if (o + size > elemBitSize) {
+          go(i + p, size - p, v)
+        } else {
+          ()
+        }
+      }
+
+      go(i, size, v)
+    }
   }
 
   implicit class ByteBitArrayOps_2s8EdpV(val array: Array[Byte]) extends AnyVal {
+    @inline final def elemBitSize: Int = 8
+
     final def setAtIndex(i: Long, v: Byte): Unit = array(i.toInt) = v
 
     final def getAtIndex(i: Long): Byte = array(i.toInt)
@@ -576,6 +621,47 @@ package object syntax {
       val nn = getAtIndex(b + 8).ulong <<<< n
 
       vv |||| uu |||| tt |||| ss |||| rr |||| qq |||| pp |||| oo |||| nn
+    }
+
+    final def unsigned(i: Long, size: Long, v: Long): Unit = {
+      @tailrec
+      def go(i: Long, size: Long, v: Long): Unit = {
+        val b = i / elemBitSize
+        val o = i % elemBitSize
+        val p = elemBitSize - o
+
+        // offset:  |----------- o ----------| |------------------ p ---------------------|   |----------- o ----------| |------------------ p ---------------------|
+        // offset:                    |-ezis-| |-------------------------- size ------------------------------| |-ezis-|
+        // data:                      vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv   vvvvvvvv vvvvvvvV
+        // data:                               Yyyyyyyy yyyyyyyy yyyyyyyy yyyyyyyy yyyyyyyy   yyyyyyyy yyyyyyyy
+        // data:    Tttttttt tttttttt tttttttt uuuuuuuu uuuuuuuu uuuuuuuu uuuuuuuu uuuuuuuU   Wwwwwwww wwwwwwww xxxxxxxx xxxxxxxx xxxxxxxx xxxxxxxx xxxxxxxx xxxxxxxX
+        // data:    Eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeeE   Ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff fffffffF
+
+        // offset:           |----------- o ----------| |------------------ p ---------------------|
+        // offset:  |---------------ezis--------------| |------------ size ---------------|
+        // data:    vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvV
+        // data:                                        Yyyyyyyy yyyyyyyy yyyyyyyy yyyyyyyy
+        // data:             Tttttttt tttttttt tttttttt uuuuuuuu uuuuuuuu uuuuuuuu uuuuuuuu wwwwwwwW
+        // data:             Eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeeE
+
+        val ezis = elemBitSize - size
+        val e = getAtIndex(b + 0)
+        val y = v <<<< ezis
+        val t = e >>>> p <<<< p
+        val u = (y >>>> o).ubyte
+        val w = e <<<< (o + size) >>>> (o + size)
+        val ee = t |||| u |||| w
+
+        setAtIndex(b + 0, ee)
+
+        if (o + size > elemBitSize) {
+          go(i + p, size - p, v)
+        } else {
+          ()
+        }
+      }
+
+      go(i, size, v)
     }
   }
 }

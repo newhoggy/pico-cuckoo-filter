@@ -6,6 +6,8 @@ import org.specs2.ScalaCheck
 import org.specs2.mutable.Specification
 
 class IntBitArraySpec extends Specification with ScalaCheck {
+  sequential
+
   "Bytes that are set can be retrieved again" in {
     prop { (v: Byte, offset: Long, wallpaper: Int) =>
       val buffer = Array.fill(65)(wallpaper)
@@ -127,7 +129,7 @@ class IntBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Setting unsigned int of size 8 is equivalent to setting byte" in {
-    val wallpaper = -1L
+    val wallpaper = -1
     val u = 0x42.toByte
 
     for (o <- 0L until 128L) {
@@ -140,7 +142,7 @@ class IntBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Setting unsigned int of size 16 is equivalent to setting short" in {
-    val wallpaper = -1L
+    val wallpaper = -1
     val u = 0x4002.toShort
 
     for (o <- 0L until 128L) {
@@ -153,7 +155,7 @@ class IntBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Setting unsigned int of size 32 is equivalent to setting int" in {
-    val wallpaper = -1L
+    val wallpaper = -1
     val u = 0x40000002
 
     for (o <- 0L until 128L) {
@@ -166,7 +168,7 @@ class IntBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Setting unsigned int of size 64 is equivalent to setting long" in {
-    val wallpaper = -1L
+    val wallpaper = -1
     val u = 0x4000000000000002L
 
     for (o <- 0L until 128L) {
