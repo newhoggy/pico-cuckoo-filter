@@ -102,7 +102,6 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
     }.setGen2(Gen.choose(0L, 127L))
   }
 
-
   "Setting unsigned int of size 8 is equivalent to setting byte" in {
     val wallpaper = -1.toByte
     val u = 0x42.toByte
