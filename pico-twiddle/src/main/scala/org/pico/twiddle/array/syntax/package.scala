@@ -131,7 +131,7 @@ package object syntax {
       getAtIndex(b + 0) <<<< o |||| getAtIndex(b + 1) >>>> n
     }
 
-    final def unsigned(i: Long, size: Long, v: Long): Unit = {
+    final def update(i: Long, size: Long, v: Long): Unit = {
       @tailrec
       def go(i: Long, size: Long, v: Long): Unit = {
         val b = i / elemBitSize
@@ -287,7 +287,7 @@ package object syntax {
       pp |||| oo |||| nn
     }
 
-    final def unsigned(i: Long, size: Long, v: Long): Unit = {
+    final def update(i: Long, size: Long, v: Long): Unit = {
       @tailrec
       def go(i: Long, size: Long, v: Long): Unit = {
         val b = i / elemBitSize
@@ -448,7 +448,7 @@ package object syntax {
       rr |||| qq |||| pp |||| oo |||| nn
     }
 
-    final def unsigned(i: Long, size: Long, v: Long): Unit = {
+    final def update(i: Long, size: Long, v: Long): Unit = {
       @tailrec
       def go(i: Long, size: Long, v: Long): Unit = {
         val b = i / elemBitSize
@@ -623,7 +623,7 @@ package object syntax {
       vv |||| uu |||| tt |||| ss |||| rr |||| qq |||| pp |||| oo |||| nn
     }
 
-    final def unsigned(i: Long, size: Long, v: Long): Unit = {
+    final def update(i: Long, size: Long, v: Long): Unit = {
       @tailrec
       def go(i: Long, size: Long, v: Long): Unit = {
         val b = i / elemBitSize

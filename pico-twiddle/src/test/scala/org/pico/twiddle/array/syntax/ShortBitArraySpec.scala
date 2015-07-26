@@ -108,7 +108,7 @@ class ShortBitArraySpec extends Specification with ScalaCheck {
 
     for (o <- 0L until 128L) {
       val buffer = Array.fill(130)(wallpaper)
-      buffer.unsigned(o, 8, u)
+      buffer.update(o, 8, u)
       buffer.byte(o) ==== u
     }
 
@@ -121,7 +121,7 @@ class ShortBitArraySpec extends Specification with ScalaCheck {
 
     for (o <- 0L until 128L) {
       val buffer = Array.fill(130)(wallpaper)
-      buffer.unsigned(o, 16, u)
+      buffer.update(o, 16, u)
       buffer.short(o) ==== u
     }
 
@@ -134,7 +134,7 @@ class ShortBitArraySpec extends Specification with ScalaCheck {
 
     for (o <- 0L until 128L) {
       val buffer = Array.fill(130)(wallpaper)
-      buffer.unsigned(o, 32, u)
+      buffer.update(o, 32, u)
       buffer.int(o) ==== u
     }
 
@@ -147,7 +147,7 @@ class ShortBitArraySpec extends Specification with ScalaCheck {
 
     for (o <- 0L until 128L) {
       val buffer = Array.fill(130)(wallpaper)
-      buffer.unsigned(o, 64, u)
+      buffer.update(o, 64, u)
       buffer.long(o) ==== u
     }
 
