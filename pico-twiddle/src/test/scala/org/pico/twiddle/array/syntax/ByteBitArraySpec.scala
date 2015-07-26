@@ -6,8 +6,6 @@ import org.specs2.ScalaCheck
 import org.specs2.mutable.Specification
 
 class ByteBitArraySpec extends Specification with ScalaCheck {
-  sequential
-
   "Bytes that are set can be retrieved again" in {
     prop { (v: Byte, offset: Long, wallpaper: Byte) =>
       val buffer = Array.fill(130)(wallpaper)

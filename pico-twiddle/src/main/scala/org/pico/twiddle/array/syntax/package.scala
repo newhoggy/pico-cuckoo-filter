@@ -18,19 +18,7 @@ package object syntax {
     final def int(i: Long, v: Int): Unit = update(i, 32, v.ulong)
     final def long(i: Long, v: Long): Unit = update(i, 64, v.ulong)
 
-    final def byte(i: Long): Byte = {
-      val ai = i / elemBitSize
-      val bi = ai + 1
-      val o = i % elemBitSize
-      val ars = o + 8
-      val brs = (o - 8) max 0
-      val aw = getAtIndex(ai)
-      val bw = getAtIndex(bi)
-      val ap = aw >>>> (64 - ars)
-      val bp = bw >>>> (112 - brs)
-      val v = ap.toByte |||| bp.toByte
-      v
-    }
+    final def byte(i: Long): Byte = signed(i, 8).ubyte
 
     final def short(i: Long): Short = {
       val ai = i / elemBitSize
@@ -109,6 +97,27 @@ package object syntax {
       }
 
       go(i, size, v)
+    }
+
+    def signed(i: Long, size: Long): Long = {
+      @tailrec
+      def go(i: Long, size: Long, acc: Long): Long = {
+        val b = i / elemBitSize
+        val o = i % elemBitSize
+        val s = ((size + o) min elemBitSize) - o
+        val p = elemBitSize - o
+
+        val e = getAtIndex(b + 0)
+        val v = acc <<<< s |||| (e <<<< o >>>> o >>>> (p - s))
+
+        if (size > s) {
+          go(i + p, size - s, v)
+        } else {
+          v
+        }
+      }
+
+      go(i, size, -1L)
     }
   }
 
