@@ -166,4 +166,55 @@ class LongBitArraySpec extends Specification with ScalaCheck {
     success
   }
 
+  "Setting unsigned int of size 8 is equivalent to setting byte" in {
+    val wallpaper = -1L
+    val u = 0x42.toByte
+
+    for (o <- 0L until 128L) {
+      val buffer = Array.fill(130)(wallpaper)
+      buffer.unsigned(o, 8, u)
+      buffer.byte(o) ==== u
+    }
+
+    success
+  }
+
+  "Setting unsigned int of size 16 is equivalent to setting short" in {
+    val wallpaper = -1L
+    val u = 0x4002.toShort
+
+    for (o <- 0L until 128L) {
+      val buffer = Array.fill(130)(wallpaper)
+      buffer.unsigned(o, 16, u)
+      buffer.short(o) ==== u
+    }
+
+    success
+  }
+
+  "Setting unsigned int of size 32 is equivalent to setting int" in {
+    val wallpaper = -1L
+    val u = 0x40000002
+
+    for (o <- 0L until 128L) {
+      val buffer = Array.fill(130)(wallpaper)
+      buffer.unsigned(o, 32, u)
+      buffer.int(o) ==== u
+    }
+
+    success
+  }
+
+  "Setting unsigned int of size 64 is equivalent to setting long" in {
+    val wallpaper = -1L
+    val u = 0x4000000000000002L
+
+    for (o <- 0L until 128L) {
+      val buffer = Array.fill(130)(wallpaper)
+      buffer.unsigned(o, 64, u)
+      buffer.long(o) ==== u
+    }
+
+    success
+  }
 }

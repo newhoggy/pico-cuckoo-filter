@@ -81,5 +81,7 @@ package object syntax {
     }
 
     def ||||(that: Long): Long = self | that
+
+    def &&&&(that: Long): Long = self & that
   }
 }
