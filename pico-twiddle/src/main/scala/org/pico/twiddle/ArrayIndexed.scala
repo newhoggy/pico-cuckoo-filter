@@ -1,9 +1,9 @@
 package org.pico.twiddle
 
-trait ArrayIndexed[A, @specialized(Byte, Short, Int, Long) E] {
-  def elemBitSize: Int
+import scala.language.higherKinds
 
-  def setAtIndex(indexed: A, i: Long, v: E): Unit
+trait ArrayIndexed[F[_], @specialized(Byte, Short, Int, Long) E] {
+  def setAtIndex(indexed: F[E], i: Long, v: E): Unit
 
-  def getAtIndex(indexed: A, i: Long): E
+  def getAtIndex(indexed: F[E], i: Long): E
 }

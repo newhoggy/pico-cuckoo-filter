@@ -14,6 +14,8 @@ class ByteBitArraySpec extends Specification with ScalaCheck {
       val buffer = Array.fill(130)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
+
+
       buffer.byte(offset, v)
       buffer.byte(offset) ==== v
     }.setGen2(Gen.choose(0L, 127L))

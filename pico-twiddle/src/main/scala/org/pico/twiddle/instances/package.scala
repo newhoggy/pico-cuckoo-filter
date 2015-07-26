@@ -3,33 +3,25 @@ package org.pico.twiddle
 import org.pico.twiddle.syntax.fixedInt._
 
 package object instances {
-  implicit val arrayIndexedByteArray = new ArrayIndexed[Array[Byte], Byte] {
-    override def elemBitSize: Int = 8
-
+  implicit val arrayIndexedByteArray = new ArrayIndexed[Array, Byte] {
     override def setAtIndex(indexed: Array[Byte], i: Long, v: Byte): Unit = indexed(i.toInt) = v
 
     override def getAtIndex(indexed: Array[Byte], i: Long): Byte = indexed(i.toInt)
   }
 
-  implicit val arrayIndexedShortArray = new ArrayIndexed[Array[Short], Short] {
-    override def elemBitSize: Int = 16
-
+  implicit val arrayIndexedShortArray = new ArrayIndexed[Array, Short] {
     override def setAtIndex(indexed: Array[Short], i: Long, v: Short): Unit = indexed(i.toInt) = v
 
     override def getAtIndex(indexed: Array[Short], i: Long): Short = indexed(i.toInt)
   }
 
-  implicit val arrayIndexedIntArray = new ArrayIndexed[Array[Int], Int] {
-    override def elemBitSize: Int = 32
-
+  implicit val arrayIndexedIntArray = new ArrayIndexed[Array, Int] {
     override def setAtIndex(indexed: Array[Int], i: Long, v: Int): Unit = indexed(i.toInt) = v
 
     override def getAtIndex(indexed: Array[Int], i: Long): Int = indexed(i.toInt)
   }
 
-  implicit val arrayIndexedLongArray = new ArrayIndexed[Array[Long], Long] {
-    override def elemBitSize: Int = 64
-
+  implicit val arrayIndexedLongArray = new ArrayIndexed[Array, Long] {
     override def setAtIndex(indexed: Array[Long], i: Long, v: Long): Unit = indexed(i.toInt) = v
 
     override def getAtIndex(indexed: Array[Long], i: Long): Long = indexed(i.toInt)

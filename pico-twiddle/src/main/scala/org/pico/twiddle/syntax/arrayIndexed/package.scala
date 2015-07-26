@@ -2,12 +2,14 @@ package org.pico.twiddle.syntax
 
 import org.pico.twiddle.ArrayIndexed
 
-package object arrayIndexed {
-  implicit class ArrayIndexedOps[A](val self: A) extends AnyVal {
-    def setAtIndex[@specialized(Byte, Short, Int, Long) E](
-        i: Long, e: E)(implicit ev: ArrayIndexed[A, E]): Unit = ev.setAtIndex(self, i, e)
+import scala.language.higherKinds
 
-    def getAtIndex[@specialized(Byte, Short, Int, Long) E](
-        i: Long)(implicit ev: ArrayIndexed[A, E]): E = ev.getAtIndex(self, i)
+package object arrayIndexed {
+  implicit class ArrayIndexedOps[F[_], E](val self: F[E]) extends AnyVal {
+    def setAtIndex(
+        i: Long, e: E)(implicit ev: ArrayIndexed[F, E]): Unit = ev.setAtIndex(self, i, e)
+
+    def getAtIndex(
+        i: Long)(implicit ev: ArrayIndexed[F, E]): E = ev.getAtIndex(self, i)
   }
 }
