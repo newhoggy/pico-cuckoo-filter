@@ -117,12 +117,52 @@ class IntBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Consecutive Shorts that are set on saturated wallpaper can be retrieved again" in {
+    val wallpaper = -1
+    val u = 0x4002.toShort
+    for (o <- 0L until 128L) {
+      val buffer = Array.fill(130)(wallpaper)
+      buffer.short(o, u)
+      buffer.short(o) ==== u
+    }
+
+    success
+  }
+
+  "Consecutive Int that are set on saturated wallpaper can be retrieved again" in {
     for (offset <- 0L until 128L) {
       val wallpaper = -1
-      val u = 0x4002.toShort
+      val u = 0x40000002
       val buffer = Array.fill(130)(wallpaper)
-      buffer.short(offset + u.bitSize * 0, u)
-      buffer.short(offset + u.bitSize * 0) ==== u
+      buffer.int(offset + u.bitSize * 0, u)
+      buffer.int(offset + u.bitSize * 0) ==== u
+    }
+
+    success
+  }
+
+  "Consecutive Long that are set on saturated wallpaper can be retrieved again" in {
+    val wallpaper = -1
+    val u = 0x4000000000000002L
+    for (o <- 0L until 128L) {
+      val p = o + u.bitSize
+      val buffer = Array.fill(130)(wallpaper)
+      buffer.long(o + u.bitSize * 0, u)
+      buffer.long(o + u.bitSize * 0) ==== u
+    }
+
+    success
+  }
+
+  "Consecutive Shorts that are set on saturated wallpaper can be retrieved again" in {
+    val wallpaper = -1
+    val u = 0x4002.toShort
+    for (o <- 0L until 128L) {
+      val p = o + u.bitSize
+      val buffer = Array.fill(130)(wallpaper)
+      buffer.short(o, u)
+      buffer.short(p, u)
+      buffer.short(o) ==== u
+      buffer.short(p) ==== u
     }
 
     success
