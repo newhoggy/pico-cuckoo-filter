@@ -88,50 +88,19 @@ package object syntax {
   implicit class IntBitArrayOps_2s8EdpV(val array: Array[Int]) extends AnyVal {
     @inline final def elemBitSize: Int = 32
 
-    final def setAtIndex(i: Long, v: Int): Unit = array(i.toInt) = v
+    @inline final def setAtIndex(i: Long, v: Int): Unit = array(i.toInt) = v
 
-    final def getAtIndex(i: Long): Int = array(i.toInt)
+    @inline final def getAtIndex(i: Long): Int = array(i.toInt)
 
-    final def byte(i: Long, v: Byte): Unit = update(i, 8, v.ulong)
-    final def short(i: Long, v: Short): Unit = update(i, 16, v.ulong)
-    final def int(i: Long, v: Int): Unit = update(i, 32, v.ulong)
-    final def long(i: Long, v: Long): Unit = update(i, 64, v.ulong)
+    @inline final def byte(i: Long, v: Byte): Unit = update(i, 8, v.ulong)
+    @inline final def short(i: Long, v: Short): Unit = update(i, 16, v.ulong)
+    @inline final def int(i: Long, v: Int): Unit = update(i, 32, v.ulong)
+    @inline final def long(i: Long, v: Long): Unit = update(i, 64, v.ulong)
 
-    final def byte(i: Long): Byte = {
-      val ai = i / elemBitSize
-      val bi = ai + 1
-      val o = i % elemBitSize
-      val ars = o + 8
-      val brs = (o - 8) max 0
-      val aw = getAtIndex(ai)
-      val bw = getAtIndex(bi)
-      val ap = aw >>>> (32 - ars)
-      val bp = bw >>>> (48 - brs)
-
-      ap.toByte |||| bp.toByte
-    }
-
-    final def short(i: Long): Short = {
-      val ai = i / elemBitSize
-      val bi = ai + 1
-      val o = i % elemBitSize
-      val ars = o + 8
-      val brs = (o - 8) max 0
-      val aw = getAtIndex(ai)
-      val bw = getAtIndex(bi)
-      val ap = aw >>>> (24 - ars)
-      val bp = bw >>>> (40 - brs)
-      val v = ap.toShort |||| bp.toShort
-      v
-    }
-
-    final def int(i: Long): Int = {
-      val b = i / 32
-      val o = i % 32
-      val n = o - 32
-
-      getAtIndex(b + 0) <<<< o |||| getAtIndex(b + 1) <<<< n
-    }
+    @inline final def byte(i: Long): Byte = signed(i, 8).ubyte
+    @inline final def short(i: Long): Short = signed(i, 16).ushort
+    @inline final def int(i: Long): Int = signed(i, 32).uint
+//    @inline final def long(i: Long): Long = signed(i, 64).ulong
 
     final def long(i: Long): Long = {
       val b = i / 32
@@ -146,7 +115,7 @@ package object syntax {
       pp |||| oo |||| nn
     }
 
-    final def update(i: Long, size: Long, v: Long): Unit = {
+    @inline final def update(i: Long, size: Long, v: Long): Unit = {
       @tailrec
       def go(i: Long, size: Long, v: Long): Unit = {
         val b = i / elemBitSize
@@ -185,6 +154,27 @@ package object syntax {
       }
 
       go(i, size, v)
+    }
+
+    @inline def signed(i: Long, size: Long): Long = {
+      @tailrec
+      def go(i: Long, size: Long, acc: Long): Long = {
+        val b = i / elemBitSize
+        val o = i % elemBitSize
+        val s = ((size + o) min elemBitSize) - o
+        val p = elemBitSize - o
+
+        val e = getAtIndex(b + 0)
+        val v = acc <<<< s |||| (e <<<< o >>>> o >>>> (p - s))
+
+        if (size > s) {
+          go(i + p, size - s, v)
+        } else {
+          v
+        }
+      }
+
+      go(i, size, -1L)
     }
   }
 
