@@ -3,6 +3,8 @@ package org.pico.twiddle.array
 import org.pico.twiddle.unsigned.syntax._
 import org.pico.twiddle.syntax.anyVal._
 
+import scala.annotation.tailrec
+
 package object syntax {
   implicit class LongBitArrayOps_2s8EdpV(val array: Array[Long]) extends AnyVal {
     @inline final def elemBitSize: Int = 64
@@ -129,12 +131,13 @@ package object syntax {
       getAtIndex(b + 0) <<<< o |||| getAtIndex(b + 1) >>>> n
     }
 
-    final def unsigned(i: Long, size: Int, v: Long): Unit = {
-      val b = i / elemBitSize
-      val o = i % elemBitSize
-      val p = elemBitSize - o
+    final def unsigned(i: Long, size: Long, v: Long): Unit = {
+      @tailrec
+      def go(i: Long, size: Long, v: Long): Unit = {
+        val b = i / elemBitSize
+        val o = i % elemBitSize
+        val p = elemBitSize - o
 
-      if (o + size > elemBitSize) {
         // offset:  |----------- o ----------| |------------------ p ---------------------|   |----------- o ----------| |------------------ p ---------------------|
         // offset:                    |-ezis-| |-------------------------- size ------------------------------| |-ezis-|
         // data:                      vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv   vvvvvvvv vvvvvvvV
@@ -142,24 +145,6 @@ package object syntax {
         // data:    Tttttttt tttttttt tttttttt uuuuuuuu uuuuuuuu uuuuuuuu uuuuuuuu uuuuuuuU   Wwwwwwww wwwwwwww xxxxxxxx xxxxxxxx xxxxxxxx xxxxxxxx xxxxxxxx xxxxxxxX
         // data:    Eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeeE   Ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff fffffffF
 
-        val ezis = elemBitSize - size
-
-        val e = getAtIndex(b + 0)
-        val f = getAtIndex(b + 1)
-
-        val y = v <<<< ezis
-
-        val t = e >>>> p <<<< p
-        val u = y >>>> o
-        val w = y <<<< p
-        val x = f <<<< (o - ezis) >>>> (o - ezis)
-
-        val ee = t |||| u
-        val ff = w |||| x
-
-        setAtIndex(b + 0, ee)
-        setAtIndex(b + 1, ff)
-      } else {
         // offset:           |----------- o ----------| |------------------ p ---------------------|
         // offset:  |---------------ezis--------------| |------------ size ---------------|
         // data:    vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvv vvvvvvvV
@@ -168,19 +153,23 @@ package object syntax {
         // data:             Eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeee eeeeeeeE
 
         val ezis = elemBitSize - size
-
         val e = getAtIndex(b + 0)
-
         val y = v <<<< ezis
-
         val t = e >>>> p <<<< p
         val u = y >>>> o
         val w = e <<<< (o + size) >>>> (o + size)
-
         val ee = t |||| u |||| w
 
         setAtIndex(b + 0, ee)
+
+        if (o + size > elemBitSize) {
+          go(i + p, size - p, v)
+        } else {
+          ()
+        }
       }
+
+      go(i, size, v)
     }
   }
 
@@ -297,6 +286,8 @@ package object syntax {
 
       pp |||| oo |||| nn
     }
+
+
   }
 
   implicit class ShortBitArrayOps_2s8EdpV(val array: Array[Short]) extends AnyVal {
