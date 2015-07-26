@@ -9,9 +9,9 @@ import scala.annotation.tailrec
 
 package object array2 {
   implicit class ArrayOps_2s8EdpV[A](val self: Array[A]) extends AnyVal {
-    @inline final def setAtIndex(i: Long, v: Long)(implicit ev: FixedInt[A], ev2: FixedInt2FixedInt[Long, A]): Unit = self(i.toInt) = v.fixAs[A]
+    @inline final def setAtIndex(i: Long, v: A)(implicit ev: FixedInt[A], ev2: FixedInt2FixedInt[Long, A]): Unit = self(i.toInt) = v
 
-    @inline final def getAtIndex(i: Long)(implicit ev: FixedInt[A], ev2: FixedInt2FixedInt[Long, A]): Long = self(i.uint).ulong
+    @inline final def getAtIndex(i: Long)(implicit ev: FixedInt[A], ev2: FixedInt2FixedInt[Long, A]): A = self(i.uint)
 
     @inline final def byte(i: Long, v: Byte)(implicit ev: FixedInt[A], ev2: FixedInt2FixedInt[Long, A]): Unit = update(i, 8, v.ulong)
     @inline final def short(i: Long, v: Short)(implicit ev: FixedInt[A], ev2: FixedInt2FixedInt[Long, A]): Unit = update(i, 16, v.ulong)
@@ -46,7 +46,7 @@ package object array2 {
 
         val ezis = bitSize[A] - size
         val e = getAtIndex(b)
-        val y = v <<<< ezis
+        val y = (v <<<< ezis).fixAs[A]
         val t = e >>>> p <<<< p
         val u = y >>>> o
         val w = e <<<< (o + size) >>>> (o + size)
