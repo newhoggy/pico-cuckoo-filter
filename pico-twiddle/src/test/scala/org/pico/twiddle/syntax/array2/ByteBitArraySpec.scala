@@ -5,6 +5,7 @@ import org.scalacheck.Gen
 import org.specs2.ScalaCheck
 import org.specs2.mutable.Specification
 import org.pico.twiddle.instances._
+import org.pico.twiddle.syntax.arrayIndexed._
 import org.pico.twiddle.syntax.fixedInt._
 import org.pico.twiddle.syntax.fixedInt2FixedInt._
 
