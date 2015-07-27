@@ -1,4 +1,4 @@
-package org.pico.twiddle.syntax.array2
+package org.pico.twiddle.syntax.arrayIndexed
 
 import org.pico.twiddle.syntax.anyVal._
 import org.scalacheck.Gen
@@ -6,8 +6,6 @@ import org.specs2.ScalaCheck
 import org.specs2.mutable.Specification
 import org.pico.twiddle.instances._
 import org.pico.twiddle.syntax.arrayIndexed._
-import org.pico.twiddle.syntax.fixedInt._
-import org.pico.twiddle.syntax.fixedInt2FixedInt._
 
 class ByteBitArraySpec extends Specification with ScalaCheck {
   "Bytes that are set can be retrieved again" in {
