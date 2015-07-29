@@ -21,17 +21,19 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Int, maxNumKicks
 
   private val buffer = new Array[Byte]((bucketBits * totalBuckets + 7) / 8)
 
-  def fingerprintsInBucket(bucket: Long): Int = buffer.unsigned(bucketBits * bucket, bucketIndexBits).toInt
+  def bucketIndex(bucket: Long): Long = bucketBits * (bucket % totalBuckets)
 
-  def fingerprintsInBucket(bucket: Long, value: Long): Unit = buffer.update(bucketBits * bucket, bucketIndexBits, value)
+  def fingerprintsInBucket(bucket: Long): Int = buffer.unsigned(bucketIndex(bucket), bucketIndexBits).toInt
+
+  def fingerprintsInBucket(bucket: Long, value: Long): Unit = buffer.update(bucketIndex(bucket), bucketIndexBits, value)
 
   def setFingerprint(bucket: Long, fingerprintIndex: Int, fingerprint: Long): Unit = {
     buffer.update(
-      bucketBits * bucket + bucketIndexBits + fingerprintBits * fingerprintIndex, fingerprintBits, fingerprint)
+      bucketIndex(bucket )+ bucketIndexBits + fingerprintBits * fingerprintIndex, fingerprintBits, fingerprint)
   }
 
   def getFingerprint(bucket: Long, fingerprintIndex: Int): Long = {
-    buffer.unsigned(bucketBits * bucket + bucketIndexBits + fingerprintBits * fingerprintIndex, fingerprintBits)
+    buffer.unsigned(bucketIndex(bucket )+ bucketIndexBits + fingerprintBits * fingerprintIndex, fingerprintBits)
   }
 
   def removeFingerprintFromBucket(bucket: Long, f: Long): Boolean = {

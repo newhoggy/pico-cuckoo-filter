@@ -1,9 +1,9 @@
 package org.pico.cuckoo.filter
 
 import org.pico.hash.Hashable
+import org.scalacheck.Arbitrary.arbitrary
 import org.specs2.ScalaCheck
 import org.specs2.mutable.Specification
-import org.pico.hash.syntax._
 
 import scala.util.hashing.MurmurHash3
 
@@ -12,10 +12,25 @@ class CuckooFilterSpec extends Specification with ScalaCheck {
     override def hash(a: String): Long = MurmurHash3.stringHash(a)
   }
 
-  "Get the hash of a string" in {
-    prop { (text: String) =>
-      println(s"$text => ${text.hashed}")
-      success
+  implicit val hashableLong = new Hashable[Long] {
+    override def hash(a: Long): Long = MurmurHash3.arrayHash(Array(a))
+  }
+
+  "Can insert exactly `fingerprintsPerBucket` number of fingerprints into a bucket" in {
+    val filter = new CuckooFilter(
+      fingerprintsPerBucket = 16,
+      fingerprintBits = 8,
+      maxNumKicks = 5,
+      totalBuckets = 1)
+
+    for (i <- 0 until 16) {
+      val text = arbitrary[String].sample.get
+
+      filter.insert(text) ==== true
     }
+
+    val text = arbitrary[String].sample.get
+
+    filter.insert(text) ==== false
   }
 }
