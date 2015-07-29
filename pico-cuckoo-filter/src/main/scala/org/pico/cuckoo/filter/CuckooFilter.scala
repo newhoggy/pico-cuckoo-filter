@@ -1,12 +1,14 @@
 package org.pico.cuckoo.filter
 
+import java.lang.{Integer => JInteger}
+
 import org.pico.hash.Hashable
 import org.pico.hash.syntax._
 import org.pico.twiddle.instances._
 import org.pico.twiddle.syntax.arrayIndexed._
+
 import scala.annotation.tailrec
 import scala.util.Random
-import java.lang.{Integer => JInteger}
 
 class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Int, maxNumKicks: Int = 5, totalBuckets: Int = 128) {
   require(fingerprintBits > 0)
@@ -32,25 +34,40 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Int, maxNumKicks
     buffer.unsigned(bucketBits * bucket + bucketIndexBits + fingerprintBits * fingerprintIndex, fingerprintBits)
   }
 
-  def fingerprintIsInBucket(bucket: Long, fingerprint: Long): Boolean = {
+  def removeFingerprintFromBucket(bucket: Long, f: Long): Boolean = {
+    val fingerprints = fingerprintsInBucket(bucket)
+    val index = fingerprintIndex(bucket, f)
+
+    if (index != -1) {
+      setFingerprint(bucket, index, getFingerprint(bucket, fingerprints - 1))
+      setFingerprint(bucket, fingerprints - 1, 0)
+      true
+    } else {
+      false
+    }
+  }
+
+  def fingerprintIndex(bucket: Long, fingerprint: Long): Int = {
     val fingerprints = fingerprintsInBucket(bucket)
 
-    @tailrec def go(index: Int): Boolean = {
+    @tailrec def go(index: Int): Int = {
       if (index < fingerprints) {
         val f = getFingerprint(bucket, index)
 
         if (f == fingerprint) {
-          true
+          index
         } else {
           go(index + 1)
         }
       } else {
-        false
+        -1
       }
     }
 
     go(0)
   }
+
+  def fingerprintIsInBucket(bucket: Long, fingerprint: Long): Boolean = fingerprintIndex(bucket, fingerprint) != -1
 
   def fingerprint[A: Hashable](f: A): Long = implicitly[Hashable[A]].hash(f)
 
@@ -110,7 +127,11 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Int, maxNumKicks
     fingerprintIsInBucket(i1, f) || fingerprintIsInBucket(i2, f)
   }
 
-  final def delete[A: Hashable](value: A)(implicit ev0: Hashable[FingerPrint]): Unit = {
+  final def delete[A: Hashable](value: A)(implicit ev0: Hashable[Long]): Boolean = {
+    val f = fingerprint(value)
+    val i1 = value.hashed
+    val i2 = i1 ^ f.hashed
 
+    removeFingerprintFromBucket(i1, f) || removeFingerprintFromBucket(i2, f)
   }
 }
