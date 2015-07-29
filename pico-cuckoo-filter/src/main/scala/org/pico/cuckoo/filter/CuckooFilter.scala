@@ -4,6 +4,7 @@ import org.pico.hash.Hashable
 import org.pico.hash.syntax._
 import org.pico.twiddle.instances._
 import org.pico.twiddle.syntax.arrayIndexed._
+import scala.annotation.tailrec
 import scala.util.Random
 import java.lang.{Integer => JInteger}
 
@@ -20,7 +21,7 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Int, maxNumKicks
 
   def fingerprintsInBucket(bucket: Long): Int = buffer.unsigned(bucketBits * bucket, bucketIndexBits).toInt
 
-  def fingerprintsInBucket(bucket: Long, value: Int): Unit = buffer.update(bucketBits * bucket, bucketIndexBits, value)
+  def fingerprintsInBucket(bucket: Long, value: Long): Unit = buffer.update(bucketBits * bucket, bucketIndexBits, value)
 
   def setFingerprint(bucket: Long, fingerprintIndex: Int, fingerprint: Long): Unit = {
     buffer.update(
@@ -29,6 +30,26 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Int, maxNumKicks
 
   def getFingerprint(bucket: Long, fingerprintIndex: Int): Long = {
     buffer.unsigned(bucketBits * bucket + bucketIndexBits + fingerprintBits * fingerprintIndex, fingerprintBits)
+  }
+
+  def fingerprintIsInBucket(bucket: Long, fingerprint: Long): Boolean = {
+    val fingerprints = fingerprintsInBucket(bucket)
+
+    @tailrec def go(index: Int): Boolean = {
+      if (index < fingerprints) {
+        val f = getFingerprint(bucket, index)
+
+        if (f == fingerprint) {
+          true
+        } else {
+          go(index + 1)
+        }
+      } else {
+        false
+      }
+    }
+
+    go(0)
   }
 
   def fingerprint[A: Hashable](f: A): Long = implicitly[Hashable[A]].hash(f)
@@ -79,6 +100,14 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Int, maxNumKicks
 
       false
     }
+  }
+
+  final def lookup[A: Hashable](value: A)(implicit ev: Hashable[Long]): Boolean = {
+    val f = fingerprint(value)
+    val i1 = value.hashed
+    val i2 = i1 ^ f.hashed
+
+    fingerprintIsInBucket(i1, f) || fingerprintIsInBucket(i2, f)
   }
 
   final def delete[A: Hashable](value: A)(implicit ev0: Hashable[FingerPrint]): Unit = {
