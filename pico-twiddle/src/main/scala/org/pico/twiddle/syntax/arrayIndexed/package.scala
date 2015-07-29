@@ -128,5 +128,14 @@ package object arrayIndexed {
 
       go(i, size, -1L)
     }
+
+    @inline def unsigned(i: Long, size: Long)(
+        implicit  ev0: FixedInt[E],
+        ev1: FixedInt2FixedInt[Long, E],
+        ev2: ArrayIndexed[F, E]): Long = {
+      val shift = bitSize[Long] - size
+
+      signed(i, size) <<<< shift >>>> shift
+    }
   }
 }
