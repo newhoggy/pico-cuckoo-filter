@@ -2,10 +2,10 @@ import sbt._
 import Keys._
 
 object MultiBuild extends Build with Version {
-  val specs2_core       = "org.specs2"      %% "specs2-core"        % "3.6.2"   % "test"
-  val specs2_scalacheck = "org.specs2"      %% "specs2-scalacheck"  % "3.6.2"   % "test"
-  val scalacheck        = "org.scalacheck"  %% "scalacheck"         % "1.12.4"  % "test"
-  val scalaz_core       = "org.scalaz"      %% "scalaz-core"        % "7.1.2"
+  val scalaz_core       = "org.scalaz"        %% "scalaz-core"        % "7.1.2"
+  val scalacheck        = "org.scalacheck"    %% "scalacheck"         % "1.12.4"    % "test"
+  val specs2_core       = "org.specs2"        %% "specs2-core"        % "3.6.2"     % "test"
+  val specs2_scalacheck = "org.specs2"        %% "specs2-scalacheck"  % "3.6.2"     % "test"
 
   implicit class ProjectOps(self: Project) {
     def standard: Project = {
@@ -42,7 +42,8 @@ object MultiBuild extends Build with Version {
 
   lazy val `pico-cuckoo-filter` = Project(id = "pico-cuckoo-filter", base = file("pico-cuckoo-filter"))
       .standard.published
-      .libs(specs2_core, scalaz_core)
+      .libs(scalaz_core)
+      .libs(specs2_core, specs2_scalacheck, scalacheck)
       .dependsOn(`pico-hash`, `pico-twiddle`)
 
   lazy val root = Project(id = "all", base = file("."))
