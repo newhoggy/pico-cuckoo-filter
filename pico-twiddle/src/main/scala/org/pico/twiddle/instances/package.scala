@@ -4,33 +4,33 @@ import org.pico.twiddle.syntax.fixedInt._
 
 package object instances {
   implicit val arrayIndexedByteArray = new ArrayIndexed[Array, Byte] {
-    override def setAtIndex(indexed: Array[Byte], i: Long, v: Byte): Unit = indexed(i.toInt) = v
+    override def setAtIndex(indexed: Array[Byte], i: Bits, v: Byte): Unit = indexed(i.value.toInt) = v
 
-    override def getAtIndex(indexed: Array[Byte], i: Long): Byte = indexed(i.toInt)
+    override def getAtIndex(indexed: Array[Byte], i: Bits): Byte = indexed(i.value.toInt)
   }
 
   implicit val arrayIndexedShortArray = new ArrayIndexed[Array, Short] {
-    override def setAtIndex(indexed: Array[Short], i: Long, v: Short): Unit = indexed(i.toInt) = v
+    override def setAtIndex(indexed: Array[Short], i: Bits, v: Short): Unit = indexed(i.value.toInt) = v
 
-    override def getAtIndex(indexed: Array[Short], i: Long): Short = indexed(i.toInt)
+    override def getAtIndex(indexed: Array[Short], i: Bits): Short = indexed(i.value.toInt)
   }
 
   implicit val arrayIndexedIntArray = new ArrayIndexed[Array, Int] {
-    override def setAtIndex(indexed: Array[Int], i: Long, v: Int): Unit = indexed(i.toInt) = v
+    override def setAtIndex(indexed: Array[Int], i: Bits, v: Int): Unit = indexed(i.value.toInt) = v
 
-    override def getAtIndex(indexed: Array[Int], i: Long): Int = indexed(i.toInt)
+    override def getAtIndex(indexed: Array[Int], i: Bits): Int = indexed(i.value.toInt)
   }
 
   implicit val arrayIndexedLongArray = new ArrayIndexed[Array, Long] {
-    override def setAtIndex(indexed: Array[Long], i: Long, v: Long): Unit = indexed(i.toInt) = v
+    override def setAtIndex(indexed: Array[Long], i: Bits, v: Long): Unit = indexed(i.value.toInt) = v
 
-    override def getAtIndex(indexed: Array[Long], i: Long): Long = indexed(i.toInt)
+    override def getAtIndex(indexed: Array[Long], i: Bits): Long = indexed(i.value.toInt)
   }
 
   implicit val fixedIntLong = new FixedInt[Long] {
-    override def bitSize: Int = 64
+    override def bitSize: Bits = Bits(64)
 
-    override def hex(self: Long): String = (0 until bitSize).reverse.map(i => (self >> i) & 0x1).mkString("")
+    override def hex(self: Long): String = (0L until bitSize.value).reverse.map(i => (self >> i) & 0x1).mkString("")
 
     override def ubyte(self: Long): Byte = self.toByte
     override def ushort(self: Long): Short = self.toShort
@@ -59,9 +59,9 @@ package object instances {
   }
 
   implicit val fixedIntInt = new FixedInt[Int] {
-    override def bitSize: Int = 32
+    override def bitSize: Bits = Bits(32)
 
-    override def hex(self: Int): String = (0 until bitSize).reverse.map(i => (self >> i) & 0x1).mkString("")
+    override def hex(self: Int): String = (0L until bitSize.value).reverse.map(i => (self >> i) & 0x1).mkString("")
 
     override def ubyte(self: Int): Byte = self.toByte
     override def ushort(self: Int): Short = self.toShort
@@ -74,9 +74,9 @@ package object instances {
   }
 
   implicit val fixedIntShort = new FixedInt[Short] {
-    override def bitSize: Int = 16
+    override def bitSize: Bits = Bits(16)
 
-    override def hex(self: Short): String = (0 until bitSize).reverse.map(i => (self >> i) & 0x1).mkString("")
+    override def hex(self: Short): String = (0L until bitSize.value).reverse.map(i => (self >> i) & 0x1).mkString("")
 
     override def ubyte(self: Short): Byte = self.toByte
     override def ushort(self: Short): Short = self
@@ -89,9 +89,9 @@ package object instances {
   }
 
   implicit lazy val fixedIntByte = new FixedInt[Byte] {
-    override def bitSize: Int = 8
+    override def bitSize: Bits = Bits(8)
 
-    override def hex(self: Byte): String = (0 until bitSize).reverse.map(i => (self >> i) & 0x1).mkString("")
+    override def hex(self: Byte): String = (0L until bitSize.value).reverse.map(i => (self >> i) & 0x1).mkString("")
 
     override def ubyte(self: Byte): Byte = self.toByte
     override def ushort(self: Byte): Short = (0xff & self).toShort
@@ -117,5 +117,9 @@ package object instances {
 
   implicit val fixedInt2FixedInt_long_to_long = new FixedInt2FixedInt[Long, Long] {
     override def fixAs(self: Long): Long = self
+  }
+
+  implicit val orderedBits = new Ordering[Bits] {
+    override def compare(x: Bits, y: Bits): Int = implicitly[Ordering[Long]].compare(x.value, y.value)
   }
 }

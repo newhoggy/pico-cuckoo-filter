@@ -4,24 +4,26 @@ import java.lang.{Integer => JInteger}
 
 import org.pico.hash.{Hash64, Hashable}
 import org.pico.hash.syntax._
+import org.pico.twiddle.Bits
 import org.pico.twiddle.instances._
 import org.pico.twiddle.syntax.arrayIndexed._
+import org.pico.twiddle.syntax.anyVal._
 
 import scala.annotation.tailrec
 import scala.util.Random
 
-class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Int, maxNumKicks: Int = 5, totalBuckets: Int = 128) {
-  require(fingerprintBits > 0)
+class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Bits, maxNumKicks: Int = 5, totalBuckets: Int = 128) {
+  require(fingerprintBits > Bits(0))
   require(maxNumKicks > 0)
   require(fingerprintsPerBucket > 0)
 
-  private val bucketIndexBits = 32 - JInteger.numberOfLeadingZeros(fingerprintsPerBucket)
+  private val bucketIndexBits = Bits(32 - JInteger.numberOfLeadingZeros(fingerprintsPerBucket))
 
-  private val bucketBits = (1 << fingerprintBits) * fingerprintsPerBucket + bucketIndexBits
+  private val bucketBits = Bits((1 << fingerprintBits) * fingerprintsPerBucket) + bucketIndexBits
 
-  private val buffer = new Array[Byte]((bucketBits * totalBuckets + 7) / 8)
+  private val buffer = new Array[Byte]((bucketBits * totalBuckets).byteIndexCeiling)
 
-  def bucketIndex(hash: Hash64): Long = bucketBits * (hash.value & 0x7fffffffffffffffL) % totalBuckets
+  def bucketIndex(hash: Hash64): Bits = bucketBits * (hash.value & 0x7fffffffffffffffL) % totalBuckets
 
   def fingerprintsInBucketForHash(hash: Hash64): Int = buffer.unsigned(bucketIndex(hash), bucketIndexBits).toInt
 

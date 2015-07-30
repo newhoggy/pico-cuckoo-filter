@@ -1,5 +1,6 @@
 package org.pico.twiddle.syntax.array
 
+import org.pico.twiddle.syntax.anyVal._
 import org.scalacheck.Gen
 import org.specs2.ScalaCheck
 import org.specs2.mutable.Specification
@@ -12,10 +13,10 @@ class AllBitArraySpec extends Specification with ScalaCheck {
       val b16 = new Array[Byte](128)
       val b08 = new Array[Byte](256)
 
-      b64.byte(offset, v)
-      b32.byte(offset, v)
-      b16.byte(offset, v)
-      b08.byte(offset, v)
+      b64.byte(offset.bits, v)
+      b32.byte(offset.bits, v)
+      b16.byte(offset.bits, v)
+      b08.byte(offset.bits, v)
 
       success
     }.setGen2(Gen.choose(0L, 127L))

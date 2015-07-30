@@ -1,5 +1,6 @@
 package org.pico.twiddle.syntax.array
 
+import org.pico.twiddle.instances._
 import org.pico.twiddle.syntax.anyVal._
 import org.scalacheck.Gen
 import org.specs2.ScalaCheck
@@ -13,8 +14,8 @@ class IntBitArraySpec extends Specification with ScalaCheck {
       val buffer = Array.fill(65)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
-      buffer.int(offset, v)
-      buffer.int(offset) ==== v
+      buffer.int(offset.bits, v)
+      buffer.int(offset.bits) ==== v
     }.setGen2(Gen.choose(0L, 127L))
   }
 
@@ -23,8 +24,8 @@ class IntBitArraySpec extends Specification with ScalaCheck {
       val buffer = Array.fill(65)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
-      buffer.int(offset, v)
-      buffer.int(offset) ==== v
+      buffer.int(offset.bits, v)
+      buffer.int(offset.bits) ==== v
     }.setGen2(Gen.choose(0L, 127L))
   }
 
@@ -33,8 +34,8 @@ class IntBitArraySpec extends Specification with ScalaCheck {
       val buffer = Array.fill(65)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
-      buffer.int(offset, v)
-      buffer.int(offset) ==== v
+      buffer.int(offset.bits, v)
+      buffer.int(offset.bits) ==== v
     }.setGen2(Gen.choose(0L, 127L))
   }
 
@@ -43,8 +44,8 @@ class IntBitArraySpec extends Specification with ScalaCheck {
       val buffer = Array.fill(65)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
-      buffer.long(offset, v)
-      buffer.long(offset) ==== v
+      buffer.long(offset.bits, v)
+      buffer.long(offset.bits) ==== v
     }.setGen2(Gen.choose(0L, 127L))
   }
 
@@ -53,12 +54,12 @@ class IntBitArraySpec extends Specification with ScalaCheck {
       val buffer = Array.fill(130)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
-      buffer.byte(offset + u.bitSize * 0, u)
-      buffer.byte(offset + w.bitSize * 2, w)
-      buffer.byte(offset + v.bitSize * 1, v)
-      buffer.byte(offset + u.bitSize * 0) ==== u
-      buffer.byte(offset + w.bitSize * 2) ==== w
-      buffer.byte(offset + v.bitSize * 1) ==== v
+      buffer.byte(offset.bits + u.bitSize * 0, u)
+      buffer.byte(offset.bits + w.bitSize * 2, w)
+      buffer.byte(offset.bits + v.bitSize * 1, v)
+      buffer.byte(offset.bits + u.bitSize * 0) ==== u
+      buffer.byte(offset.bits + w.bitSize * 2) ==== w
+      buffer.byte(offset.bits + v.bitSize * 1) ==== v
     }.setGen2(Gen.choose(0L, 127L))
   }
 
@@ -67,12 +68,12 @@ class IntBitArraySpec extends Specification with ScalaCheck {
       val buffer = Array.fill(130)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
-      buffer.short(offset + u.bitSize * 0, u)
-      buffer.short(offset + w.bitSize * 2, w)
-      buffer.short(offset + v.bitSize * 1, v)
-      buffer.short(offset + u.bitSize * 0) ==== u
-      buffer.short(offset + w.bitSize * 2) ==== w
-      buffer.short(offset + v.bitSize * 1) ==== v
+      buffer.short(offset.bits + u.bitSize * 0, u)
+      buffer.short(offset.bits + w.bitSize * 2, w)
+      buffer.short(offset.bits + v.bitSize * 1, v)
+      buffer.short(offset.bits + u.bitSize * 0) ==== u
+      buffer.short(offset.bits + w.bitSize * 2) ==== w
+      buffer.short(offset.bits + v.bitSize * 1) ==== v
     }.setGen2(Gen.choose(0L, 127L))
   }
 
@@ -81,12 +82,12 @@ class IntBitArraySpec extends Specification with ScalaCheck {
       val buffer = Array.fill(130)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
-      buffer.int(offset + u.bitSize * 0, u)
-      buffer.int(offset + w.bitSize * 2, w)
-      buffer.int(offset + v.bitSize * 1, v)
-      buffer.int(offset + u.bitSize * 0) ==== u
-      buffer.int(offset + w.bitSize * 2) ==== w
-      buffer.int(offset + v.bitSize * 1) ==== v
+      buffer.int(offset.bits + u.bitSize * 0, u)
+      buffer.int(offset.bits + w.bitSize * 2, w)
+      buffer.int(offset.bits + v.bitSize * 1, v)
+      buffer.int(offset.bits + u.bitSize * 0) ==== u
+      buffer.int(offset.bits + w.bitSize * 2) ==== w
+      buffer.int(offset.bits + v.bitSize * 1) ==== v
     }.setGen2(Gen.choose(0L, 127L))
   }
 
@@ -95,22 +96,22 @@ class IntBitArraySpec extends Specification with ScalaCheck {
       val buffer = Array.fill(130)(wallpaper)
       offset must be_>=(0L)
       offset must be_<(128L)
-      buffer.long(offset + u.bitSize * 0, u)
-      buffer.long(offset + w.bitSize * 2, w)
-      buffer.long(offset + v.bitSize * 1, v)
-      buffer.long(offset + u.bitSize * 0) ==== u
-      buffer.long(offset + w.bitSize * 2) ==== w
-      buffer.long(offset + v.bitSize * 1) ==== v
+      buffer.long(offset.bits + u.bitSize * 0, u)
+      buffer.long(offset.bits + w.bitSize * 2, w)
+      buffer.long(offset.bits + v.bitSize * 1, v)
+      buffer.long(offset.bits + u.bitSize * 0) ==== u
+      buffer.long(offset.bits + w.bitSize * 2) ==== w
+      buffer.long(offset.bits + v.bitSize * 1) ==== v
     }.setGen2(Gen.choose(0L, 127L))
   }
 
   "Consecutive Bytes that are set on saturated wallpaper can be retrieved again" in {
-    for (offset <- 0L until 128L) {
+    for (o <- 0.bits until 128.bits) {
       val wallpaper = -1
       val u = 0x42.toByte
       val buffer = Array.fill(130)(wallpaper)
-      buffer.byte(offset + u.bitSize * 0, u)
-      buffer.byte(offset + u.bitSize * 0) ==== u
+      buffer.byte(o + u.bitSize * 0, u)
+      buffer.byte(o + u.bitSize * 0) ==== u
     }
 
     success
@@ -119,7 +120,7 @@ class IntBitArraySpec extends Specification with ScalaCheck {
   "Consecutive Shorts that are set on saturated wallpaper can be retrieved again" in {
     val wallpaper = -1
     val u = 0x4002.toShort
-    for (o <- 0L until 128L) {
+    for (o <- 0.bits until 128.bits) {
       val buffer = Array.fill(130)(wallpaper)
       buffer.short(o, u)
       buffer.short(o) ==== u
@@ -129,12 +130,12 @@ class IntBitArraySpec extends Specification with ScalaCheck {
   }
 
   "Consecutive Int that are set on saturated wallpaper can be retrieved again" in {
-    for (offset <- 0L until 128L) {
+    for (o <- 0.bits until 128.bits) {
       val wallpaper = -1
       val u = 0x40000002
       val buffer = Array.fill(130)(wallpaper)
-      buffer.int(offset + u.bitSize * 0, u)
-      buffer.int(offset + u.bitSize * 0) ==== u
+      buffer.int(o + u.bitSize * 0, u)
+      buffer.int(o + u.bitSize * 0) ==== u
     }
 
     success
@@ -143,7 +144,7 @@ class IntBitArraySpec extends Specification with ScalaCheck {
   "Consecutive Long that are set on saturated wallpaper can be retrieved again" in {
     val wallpaper = -1
     val u = 0x4000000000000002L
-    for (o <- 0L until 128L) {
+    for (o <- 0.bits until 128.bits) {
       val p = o + u.bitSize
       val buffer = Array.fill(130)(wallpaper)
       buffer.long(o + u.bitSize * 0, u)
@@ -156,7 +157,7 @@ class IntBitArraySpec extends Specification with ScalaCheck {
   "Consecutive Shorts that are set on saturated wallpaper can be retrieved again" in {
     val wallpaper = -1
     val u = 0x4002.toShort
-    for (o <- 0L until 128L) {
+    for (o <- 0.bits until 128.bits) {
       val p = o + u.bitSize
       val buffer = Array.fill(130)(wallpaper)
       buffer.short(o, u)
@@ -172,9 +173,9 @@ class IntBitArraySpec extends Specification with ScalaCheck {
     val wallpaper = -1
     val u = 0x42.toByte
 
-    for (o <- 0L until 128L) {
+    for (o <- 0.bits until 128.bits) {
       val buffer = Array.fill(130)(wallpaper)
-      buffer.update(o, 8, u)
+      buffer.update(o, 8.bits, u)
       buffer.byte(o) ==== u
     }
 
@@ -185,9 +186,9 @@ class IntBitArraySpec extends Specification with ScalaCheck {
     val wallpaper = -1
     val u = 0x4002.toShort
 
-    for (o <- 0L until 128L) {
+    for (o <- 0.bits until 128.bits) {
       val buffer = Array.fill(130)(wallpaper)
-      buffer.update(o, 16, u)
+      buffer.update(o, 16.bits, u)
       buffer.short(o) ==== u
     }
 
@@ -198,9 +199,9 @@ class IntBitArraySpec extends Specification with ScalaCheck {
     val wallpaper = -1
     val u = 0x40000002
 
-    for (o <- 0L until 128L) {
+    for (o <- 0.bits until 128.bits) {
       val buffer = Array.fill(130)(wallpaper)
-      buffer.update(o, 32, u)
+      buffer.update(o, 32.bits, u)
       buffer.int(o) ==== u
     }
 
@@ -211,9 +212,9 @@ class IntBitArraySpec extends Specification with ScalaCheck {
     val wallpaper = -1
     val u = 0x4000000000000002L
 
-    for (o <- 0L until 128L) {
+    for (o <- 0.bits until 128.bits) {
       val buffer = Array.fill(130)(wallpaper)
-      buffer.update(o, 64, u)
+      buffer.update(o, 64.bits, u)
       buffer.long(o) ==== u
     }
 

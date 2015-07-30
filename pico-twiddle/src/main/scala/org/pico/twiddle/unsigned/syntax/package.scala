@@ -1,5 +1,7 @@
 package org.pico.twiddle.unsigned
 
+import org.pico.twiddle.Bits
+
 package object syntax {
   implicit class ByteOps_Ghg39HP(val self: Byte) extends AnyVal {
     def hex: String = (0 until 8).reverse.map(i => (self >> i) & 0x1).mkString("")
@@ -9,8 +11,8 @@ package object syntax {
     def uint: Int = 0xff & self.toInt
     def ulong: Long = 0xff & self.toLong
 
-    def >>>>(offset: Long): Byte = (ulong >>>> offset).ubyte
-    def <<<<(offset: Long): Byte = (ulong <<<< offset).ubyte
+    def >>>>(offset: Bits): Byte = (ulong >>>> offset).ubyte
+    def <<<<(offset: Bits): Byte = (ulong <<<< offset).ubyte
 
     def ||||(that: Byte): Byte = (self | that).toByte
   }
@@ -23,8 +25,8 @@ package object syntax {
     def uint: Int = 0xffff & self.toInt
     def ulong: Long = 0xffff & self.toLong
 
-    def >>>>(offset: Long): Short = (ulong >>>> offset).ushort
-    def <<<<(offset: Long): Short = (ulong <<<< offset).ushort
+    def >>>>(offset: Bits): Short = (ulong >>>> offset).ushort
+    def <<<<(offset: Bits): Short = (ulong <<<< offset).ushort
 
     def ||||(that: Short): Short = (self | that).toShort
   }
@@ -36,8 +38,8 @@ package object syntax {
     def uint: Int = self
     def ulong: Long = 0xffffffffL & self.toLong
 
-    def >>>>(offset: Long): Int = (ulong >>>> offset).uint
-    def <<<<(offset: Long): Int = (ulong <<<< offset).uint
+    def >>>>(offset: Bits): Int = (ulong >>>> offset).uint
+    def <<<<(offset: Bits): Int = (ulong <<<< offset).uint
 
     def ||||(that: Int): Int = self | that
   }
@@ -50,21 +52,21 @@ package object syntax {
     def uint: Int = self.toInt
     def ulong: Long = self
 
-    def >>>>(offset: Long): Long = {
-      offset match {
-        case o if o >= 64 => 0L
-        case o if o > 0   => self >>> offset
-        case o if o > -64 => self << -offset
-        case _            => 0L
+    def >>>>(offset: Bits): Long = {
+      offset.value match {
+        case o if o >=  64  => 0L
+        case o if o >   0   => self >>> offset.value
+        case o if o >   -64 => self << -offset.value
+        case _              => 0L
       }
     }
 
-    def <<<<(offset: Long): Long = {
-      offset match {
-        case o if o >= 64 => 0L
-        case o if o > 0   => self << offset
-        case o if o > -64 => self >>> -offset
-        case _            => 0L
+    def <<<<(offset: Bits): Long = {
+      offset.value match {
+        case o if o >=  64  => 0L
+        case o if o >   0   => self << offset.value
+        case o if o >   -64 => self >>> -offset.value
+        case _              => 0L
       }
     }
 

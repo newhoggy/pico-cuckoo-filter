@@ -1,7 +1,7 @@
 package org.pico.twiddle
 
 trait FixedInt[@specialized(Byte, Short, Int, Long) A] {
-  def bitSize: Int
+  def bitSize: Bits
   def hex(self: A): String
 
   def ubyte(self: A): Byte

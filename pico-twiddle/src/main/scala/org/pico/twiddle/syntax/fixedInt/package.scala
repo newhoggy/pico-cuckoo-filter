@@ -1,9 +1,9 @@
 package org.pico.twiddle.syntax
 
-import org.pico.twiddle.FixedInt
+import org.pico.twiddle.{Bits, FixedInt}
 
 package object fixedInt {
-  def bitSize[@specialized(Byte, Short, Int, Long) A: FixedInt]: Int = implicitly[FixedInt[A]].bitSize
+  def bitSize[@specialized(Byte, Short, Int, Long) A: FixedInt]: Bits = implicitly[FixedInt[A]].bitSize
 
   implicit class BitIntOps[A](val self: A) extends AnyVal {
     @inline final def hex(implicit ev: FixedInt[A]): String = ev.hex(self)
@@ -15,6 +15,8 @@ package object fixedInt {
 
     @inline final def >>>>(offset: Long)(implicit ev: FixedInt[A]): A = ev.>>>>(self, offset)
     @inline final def <<<<(offset: Long)(implicit ev: FixedInt[A]): A = ev.<<<<(self, offset)
+    @inline final def >>>>(offset: Bits)(implicit ev0: FixedInt[A], ev1: DummyImplicit): A = ev0.>>>>(self, offset.value)
+    @inline final def <<<<(offset: Bits)(implicit ev0: FixedInt[A], ev1: DummyImplicit): A = ev0.<<<<(self, offset.value)
     @inline final def ||||(that: A)(implicit ev: FixedInt[A]): A = ev.||||(self, that)
   }
 }

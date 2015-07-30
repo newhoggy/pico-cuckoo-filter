@@ -1,70 +1,68 @@
 package org.pico.twiddle.syntax
 
-import org.pico.twiddle.{ArrayIndexed, FixedInt2FixedInt, FixedInt}
+import org.pico.twiddle._
 import org.pico.twiddle.instances._
 import org.pico.twiddle.syntax.fixedInt._
 import org.pico.twiddle.syntax.fixedInt2FixedInt._
 
 import scala.annotation.tailrec
 
-import org.pico.twiddle.ArrayIndexed
-
 import scala.language.higherKinds
 
 package object arrayIndexed {
   implicit class ArrayIndexedOps[F[_], E](val self: F[E]) extends AnyVal {
     @inline final def setAtIndex(
-        i: Long, e: E)(implicit ev: ArrayIndexed[F, E]): Unit = ev.setAtIndex(self, i, e)
+        i: Bits, e: E)(implicit ev: ArrayIndexed[F, E]): Unit = ev.setAtIndex(self, i, e)
 
     @inline final def getAtIndex(
-        i: Long)(implicit ev: ArrayIndexed[F, E]): E = ev.getAtIndex(self, i)
+        i: Bits)(implicit ev: ArrayIndexed[F, E]): E = ev.getAtIndex(self, i)
 
-    @inline final def byte(i: Long, v: Byte)(
+    @inline final def byte(i: Bits, v: Byte)(
         implicit  ev0: FixedInt[E],
         ev1: FixedInt2FixedInt[Long, E],
-        ev2: ArrayIndexed[F, E]): Unit = update(i, 8, v.ulong)
+        ev2: ArrayIndexed[F, E]): Unit = update(i, Bits(8), v.ulong)
 
-    @inline final def short(i: Long, v: Short)(
+    @inline final def short(i: Bits, v: Short)(
         implicit  ev0: FixedInt[E],
         ev1: FixedInt2FixedInt[Long, E],
-        ev2: ArrayIndexed[F, E]): Unit = update(i, 16, v.ulong)
+        ev2: ArrayIndexed[F, E]): Unit = update(i, Bits(16), v.ulong)
 
-    @inline final def int(i: Long, v: Int)(
+    @inline final def int(i: Bits, v: Int)(
         implicit  ev0: FixedInt[E],
         ev1: FixedInt2FixedInt[Long, E],
-        ev2: ArrayIndexed[F, E]): Unit = update(i, 32, v.ulong)
+        ev2: ArrayIndexed[F, E]): Unit = update(i, Bits(32), v.ulong)
 
-    @inline final def long(i: Long, v: Long)(
+    @inline final def long(i: Bits, v: Long)(
         implicit  ev0: FixedInt[E],
         ev1: FixedInt2FixedInt[Long, E],
-        ev2: ArrayIndexed[F, E]): Unit = update(i, 64, v.ulong)
+        ev2: ArrayIndexed[F, E]): Unit = update(i, Bits(64), v.ulong)
 
-    @inline final def byte(i: Long)(
+    @inline final def byte(i: Bits)(
         implicit  ev0: FixedInt[E],
         ev1: FixedInt2FixedInt[Long, E],
-        ev2: ArrayIndexed[F, E]): Byte = signed(i, 8).ubyte
+        ev2: ArrayIndexed[F, E]): Byte = signed(i, Bits(8)).ubyte
 
-    @inline final def short(i: Long)(
+    @inline final def short(i: Bits)(
         implicit  ev0: FixedInt[E],
         ev1: FixedInt2FixedInt[Long, E],
-        ev2: ArrayIndexed[F, E]): Short = signed(i, 16).ushort
+        ev2: ArrayIndexed[F, E]): Short = signed(i, Bits(16)).ushort
 
-    @inline final def int(i: Long)(
+    @inline final def int(i: Bits)(
         implicit  ev0: FixedInt[E],
         ev1: FixedInt2FixedInt[Long, E],
-        ev2: ArrayIndexed[F, E]): Int = signed(i, 32).uint
+        ev2: ArrayIndexed[F, E]): Int = signed(i, Bits(32)).uint
 
-    @inline final def long(i: Long)(
+    @inline final def long(i: Bits)(
         implicit  ev0: FixedInt[E],
         ev1: FixedInt2FixedInt[Long, E],
-        ev2: ArrayIndexed[F, E]): Long = signed(i, 64).ulong
+        ev2: ArrayIndexed[F, E]): Long = signed(i, Bits(64)).ulong
 
-    @inline final def update(i: Long, size: Long, v: Long)(
+    @inline final def update(i: Bits, size: Bits, v: Long)(
         implicit  ev0: FixedInt[E],
         ev1: FixedInt2FixedInt[Long, E],
         ev2: ArrayIndexed[F, E]): Unit = {
       @tailrec
-      def go(i: Long, size: Long, v: Long): Unit = {
+      def go(i: Bits, size: Bits, v: Long): Unit = {
         val b = i / bitSize[E]
         val o = i % bitSize[E]
         val p = bitSize[E] - o
@@ -103,12 +101,12 @@ package object arrayIndexed {
       go(i, size, v)
     }
 
-    @inline def signed(i: Long, size: Long)(
+    @inline def signed(i: Bits, size: Bits)(
         implicit  ev0: FixedInt[E],
         ev1: FixedInt2FixedInt[Long, E],
         ev2: ArrayIndexed[F, E]): Long = {
       @tailrec
-      def go(i: Long, size: Long, acc: Long): Long = {
+      def go(i: Bits, size: Bits, acc: Long): Long = {
         val b = i / bitSize[E]
         val o = i % bitSize[E]
         val s = ((size + o) min bitSize[E]) - o
@@ -129,7 +127,7 @@ package object arrayIndexed {
       go(i, size, -1L)
     }
 
-    @inline def unsigned(i: Long, size: Long)(
+    @inline def unsigned(i: Bits, size: Bits)(
         implicit  ev0: FixedInt[E],
         ev1: FixedInt2FixedInt[Long, E],
         ev2: ArrayIndexed[F, E]): Long = {

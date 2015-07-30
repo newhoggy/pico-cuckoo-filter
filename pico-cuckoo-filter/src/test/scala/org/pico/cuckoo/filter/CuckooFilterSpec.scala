@@ -2,6 +2,7 @@ package org.pico.cuckoo.filter
 
 import org.pico.hash.syntax._
 import org.pico.hash.{Hash64, Hashable}
+import org.pico.twiddle.Bits
 import org.scalacheck.Arbitrary.arbitrary
 import org.specs2.ScalaCheck
 import org.specs2.mutable.Specification
@@ -24,7 +25,7 @@ class CuckooFilterSpec extends Specification with ScalaCheck {
   }
 
   "Can insert exactly `fingerprintsPerBucket` number of fingerprints into a bucket" in {
-    val filter = new CuckooFilter(fingerprintsPerBucket = 16, fingerprintBits = 8, maxNumKicks = 5, totalBuckets = 1)
+    val filter = new CuckooFilter(fingerprintsPerBucket = 16, fingerprintBits = Bits(8), maxNumKicks = 5, totalBuckets = 1)
 
     for (i <- 0 until 16) {
       val text = arbitrary[String].sample.get
