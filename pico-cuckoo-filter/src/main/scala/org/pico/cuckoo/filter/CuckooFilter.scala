@@ -23,10 +23,7 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Int, maxNumKicks
 
   def bucketIndex(hash: Hash64): Long = bucketBits * (hash.value & 0x7fffffffffffffffL) % totalBuckets
 
-  def fingerprintsInBucketForHash(hash: Hash64): Int = {
-    println(s"fingerprintsInBucket($hash) => buffer.unsigned(${bucketIndex(hash)}, $bucketIndexBits).toInt")
-    buffer.unsigned(bucketIndex(hash), bucketIndexBits).toInt
-  }
+  def fingerprintsInBucketForHash(hash: Hash64): Int = buffer.unsigned(bucketIndex(hash), bucketIndexBits).toInt
 
   def fingerprintsInBucketForHash(hash: Hash64, value: Long): Unit = buffer.update(bucketIndex(hash), bucketIndexBits, value)
 
@@ -83,10 +80,8 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Int, maxNumKicks
     if (fingerprints < fingerprintsPerBucket) {
       setFingerprint(hash, fingerprints, f)
       fingerprintsInBucketForHash(hash, fingerprints + 1)
-      println(s"inserted into bucket ${bucketIndex(hash)}")
       true
     } else {
-      println(s"could not insert into bucket ${bucketIndex(hash)}")
       false
     }
   }
@@ -108,8 +103,6 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Int, maxNumKicks
     var f = fingerprint(value)
     val i1 = value.hashed
     val i2 = i1 ^ f.hashed
-
-    println(s"insert($value)")
 
     addToBucket(i1, f) || addToBucket(i2, f) || {
       // must relocate existing items
