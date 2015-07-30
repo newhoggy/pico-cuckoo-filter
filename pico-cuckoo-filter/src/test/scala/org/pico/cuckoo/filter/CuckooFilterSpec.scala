@@ -39,7 +39,7 @@ class CuckooFilterSpec extends Specification with ScalaCheck {
     filter.insert(text) ==== false
   }
 
-  "Can insert exactly `fingerprintsPerBucket * 2` number of fingerprints into two buckets" in {
+  "Can insert exactly `fingerprintsPerBucket * 2` number of fingerprints into two buckets of 16 fingerprints each" in {
     val filter = new CuckooFilter(fingerprintsPerBucket = 16, fingerprintBits = 8.bits, maxNumKicks = 5, totalBuckets = 2)
 
     var inserted = 0
@@ -54,4 +54,43 @@ class CuckooFilterSpec extends Specification with ScalaCheck {
 
     inserted ==== 32
   }
+
+//  "Inserted value can be looked up" in {
+//    prop { text: String =>
+//      val filter = new CuckooFilter(fingerprintsPerBucket = 16, fingerprintBits = 24.bits, maxNumKicks = 5, totalBuckets = 2)
+//
+//      filter.insert(text)
+//
+//      filter.lookup(text) === true
+//    }
+//  }
+
+//  "Can insert exactly `fingerprintsPerBucket * 2` number of fingerprints into two buckets of 16 fingerprints each" in {
+//    val filter = new CuckooFilter(fingerprintsPerBucket = 16, fingerprintBits = 24.bits, maxNumKicks = 5, totalBuckets = 2)
+//    var accepted = Set.empty[String]
+//    var rejected = Set.empty[String]
+//
+//    var inserted = 0
+//
+//    for (i <- 0 until 64) {
+//      val text = arbitrary[String].sample.get
+//
+//      if (filter.insert(text)) {
+//        accepted += text
+//        inserted += 1
+//      } else {
+//        rejected += text
+//      }
+//    }
+//
+//    for (r <- rejected) {
+//      filter.lookup(r) ==== false
+//    }
+//
+//    for (a <- accepted) {
+//      filter.lookup(a) ==== true
+//    }
+//
+//    inserted ==== 32
+//  }
 }

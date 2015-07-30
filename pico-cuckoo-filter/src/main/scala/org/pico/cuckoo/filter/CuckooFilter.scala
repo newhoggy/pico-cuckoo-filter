@@ -86,25 +86,25 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Bits, maxNumKick
 
   def fingerprint[A: Hashable](a: A): Fingerprint = Fingerprint(implicitly[Hashable[A]].hash(a).value)
 
-  def addToBucket(hash: Hash64, f: Fingerprint): Boolean = {
-    val fingerprints = fingerprintsInBucketAt(bucketBitIndex(hash))
+  def addToBucket(bucketBitIndex: Bits, f: Fingerprint): Boolean = {
+    val fingerprints = fingerprintsInBucketAt(bucketBitIndex)
 
     if (fingerprints < fingerprintsPerBucket) {
-      setFingerprint(bucketBitIndex(hash), fingerprints, f)
-      fingerprintsInBucketAt(bucketBitIndex(hash), fingerprints + 1)
+      setFingerprint(bucketBitIndex, fingerprints, f)
+      fingerprintsInBucketAt(bucketBitIndex, fingerprints + 1)
       true
     } else {
       false
     }
   }
 
-  def swapRandomBucketEntry(hash: Hash64, f: Fingerprint): Fingerprint = {
-    val fingerprints = fingerprintsInBucketAt(bucketBitIndex(hash))
+  def swapRandomBucketEntry(bucketBitIndex: Bits, f: Fingerprint): Fingerprint = {
+    val fingerprints = fingerprintsInBucketAt(bucketBitIndex)
 
     if (fingerprints > 0) {
       val candidateIndex = Random.nextInt(fingerprints)
-      val candidate = getFingerprint(bucketBitIndex(hash), candidateIndex)
-      setFingerprint(bucketBitIndex(hash), candidateIndex, f)
+      val candidate = getFingerprint(bucketBitIndex, candidateIndex)
+      setFingerprint(bucketBitIndex, candidateIndex, f)
       candidate
     } else {
       f
@@ -116,16 +116,16 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Bits, maxNumKick
     val i1 = value.hashed
     val i2 = i1 ^ f.hashed
 
-    addToBucket(i1, f) || addToBucket(i2, f) || {
+    addToBucket(bucketBitIndex(i1), f) || addToBucket(bucketBitIndex(i2), f) || {
       // must relocate existing items
       var i = if (Random.nextBoolean()) i1 else i2
 
       for (n <- 0 until maxNumKicks) {
-        f = swapRandomBucketEntry(i, f)
+        f = swapRandomBucketEntry(bucketBitIndex(i), f)
 
         i = i ^ f.hashed
 
-        if (addToBucket(i, f)) {
+        if (addToBucket(bucketBitIndex(i), f)) {
           return true
         }
       }
