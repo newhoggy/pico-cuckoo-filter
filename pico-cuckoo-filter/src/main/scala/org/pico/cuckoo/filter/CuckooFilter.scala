@@ -2,7 +2,7 @@ package org.pico.cuckoo.filter
 
 import java.lang.{Integer => JInteger}
 
-import org.pico.hash.Hashable
+import org.pico.hash.{Hash64, Hashable}
 import org.pico.hash.syntax._
 import org.pico.twiddle.instances._
 import org.pico.twiddle.syntax.arrayIndexed._
@@ -21,36 +21,40 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Int, maxNumKicks
 
   private val buffer = new Array[Byte]((bucketBits * totalBuckets + 7) / 8)
 
-  def bucketIndex(bucket: Long): Long = bucketBits * (bucket % totalBuckets)
+  def bucketIndex(hash: Hash64): Long = bucketBits * (hash.value & 0x7fffffffffffffffL) % totalBuckets
 
-  def fingerprintsInBucket(bucket: Long): Int = buffer.unsigned(bucketIndex(bucket), bucketIndexBits).toInt
+  def fingerprintsInBucketForHash(hash: Hash64): Int = {
+    println(s"fingerprintsInBucket($hash) => buffer.unsigned(${bucketIndex(hash)}, $bucketIndexBits).toInt")
+    buffer.unsigned(bucketIndex(hash), bucketIndexBits).toInt
+  }
 
-  def fingerprintsInBucket(bucket: Long, value: Long): Unit = buffer.update(bucketIndex(bucket), bucketIndexBits, value)
+  def fingerprintsInBucketForHash(hash: Hash64, value: Long): Unit = buffer.update(bucketIndex(hash), bucketIndexBits, value)
 
-  def setFingerprint(bucket: Long, fingerprintIndex: Int, fingerprint: Long): Unit = {
+  def setFingerprint(hash: Hash64, fingerprintIndex: Int, fingerprint: Fingerprint): Unit = {
     buffer.update(
-      bucketIndex(bucket )+ bucketIndexBits + fingerprintBits * fingerprintIndex, fingerprintBits, fingerprint)
+      bucketIndex(hash) + bucketIndexBits + fingerprintBits * fingerprintIndex, fingerprintBits, fingerprint.value)
   }
 
-  def getFingerprint(bucket: Long, fingerprintIndex: Int): Long = {
-    buffer.unsigned(bucketIndex(bucket )+ bucketIndexBits + fingerprintBits * fingerprintIndex, fingerprintBits)
+  def getFingerprint(hash: Hash64, fingerprintIndex: Int): Fingerprint = {
+    Fingerprint(
+      buffer.unsigned(bucketIndex(hash) + bucketIndexBits + fingerprintBits * fingerprintIndex, fingerprintBits))
   }
 
-  def removeFingerprintFromBucket(bucket: Long, f: Long): Boolean = {
-    val fingerprints = fingerprintsInBucket(bucket)
-    val index = fingerprintIndex(bucket, f)
+  def removeFingerprintFromBucketForHash(hash: Hash64, f: Fingerprint): Boolean = {
+    val fingerprints = fingerprintsInBucketForHash(hash)
+    val index = fingerprintIndex(hash, f)
 
     if (index != -1) {
-      setFingerprint(bucket, index, getFingerprint(bucket, fingerprints - 1))
-      setFingerprint(bucket, fingerprints - 1, 0)
+      setFingerprint(hash, index, getFingerprint(hash, fingerprints - 1))
+      setFingerprint(hash, fingerprints - 1, Fingerprint(0))
       true
     } else {
       false
     }
   }
 
-  def fingerprintIndex(bucket: Long, fingerprint: Long): Int = {
-    val fingerprints = fingerprintsInBucket(bucket)
+  def fingerprintIndex(bucket: Hash64, fingerprint: Fingerprint): Int = {
+    val fingerprints = fingerprintsInBucketForHash(bucket)
 
     @tailrec def go(index: Int): Int = {
       if (index < fingerprints) {
@@ -69,39 +73,43 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Int, maxNumKicks
     go(0)
   }
 
-  def fingerprintIsInBucket(bucket: Long, fingerprint: Long): Boolean = fingerprintIndex(bucket, fingerprint) != -1
+  def fingerprintIsInBucket(hash: Hash64, fingerprint: Fingerprint): Boolean = fingerprintIndex(hash, fingerprint) != -1
 
-  def fingerprint[A: Hashable](f: A): Long = implicitly[Hashable[A]].hash(f)
+  def fingerprint[A: Hashable](a: A): Fingerprint = Fingerprint(implicitly[Hashable[A]].hash(a).value)
 
-  def addToBucket(bucket: Long, f: Long): Boolean = {
-    val fingerprints = fingerprintsInBucket(bucket)
+  def addToBucket(hash: Hash64, f: Fingerprint): Boolean = {
+    val fingerprints = fingerprintsInBucketForHash(hash)
 
     if (fingerprints < fingerprintsPerBucket) {
-      setFingerprint(bucket, fingerprints, f)
-      fingerprintsInBucket(bucket, fingerprints + 1)
+      setFingerprint(hash, fingerprints, f)
+      fingerprintsInBucketForHash(hash, fingerprints + 1)
+      println(s"inserted into bucket ${bucketIndex(hash)}")
       true
     } else {
+      println(s"could not insert into bucket ${bucketIndex(hash)}")
       false
     }
   }
 
-  def swapRandomBucketEntry(bucket: Long, f: Long): Long = {
-    val fingerprints = fingerprintsInBucket(bucket)
+  def swapRandomBucketEntry(hash: Hash64, f: Fingerprint): Fingerprint = {
+    val fingerprints = fingerprintsInBucketForHash(hash)
 
     if (fingerprints > 0) {
       val candidateIndex = Random.nextInt(fingerprints)
-      val candidate = getFingerprint(bucket, candidateIndex)
-      setFingerprint(bucket, candidateIndex, f)
+      val candidate = getFingerprint(hash, candidateIndex)
+      setFingerprint(hash, candidateIndex, f)
       candidate
     } else {
       f
     }
   }
 
-  final def insert[A: Hashable](value: A)(implicit ev: Hashable[Long]): Boolean = {
+  final def insert[A: Hashable](value: A)(implicit ev0: Hashable[Long], ev1: Hashable[Fingerprint]): Boolean = {
     var f = fingerprint(value)
     val i1 = value.hashed
     val i2 = i1 ^ f.hashed
+
+    println(s"insert($value)")
 
     addToBucket(i1, f) || addToBucket(i2, f) || {
       // must relocate existing items
@@ -121,7 +129,7 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Int, maxNumKicks
     }
   }
 
-  final def lookup[A: Hashable](value: A)(implicit ev: Hashable[Long]): Boolean = {
+  final def lookup[A: Hashable](value: A)(implicit ev0: Hashable[Long], ev1: Hashable[Fingerprint]): Boolean = {
     val f = fingerprint(value)
     val i1 = value.hashed
     val i2 = i1 ^ f.hashed
@@ -129,11 +137,11 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Int, maxNumKicks
     fingerprintIsInBucket(i1, f) || fingerprintIsInBucket(i2, f)
   }
 
-  final def delete[A: Hashable](value: A)(implicit ev0: Hashable[Long]): Boolean = {
+  final def delete[A: Hashable](value: A)(implicit ev0: Hashable[Long], ev1: Hashable[Fingerprint]): Boolean = {
     val f = fingerprint(value)
     val i1 = value.hashed
     val i2 = i1 ^ f.hashed
 
-    removeFingerprintFromBucket(i1, f) || removeFingerprintFromBucket(i2, f)
+    removeFingerprintFromBucketForHash(i1, f) || removeFingerprintFromBucketForHash(i2, f)
   }
 }
