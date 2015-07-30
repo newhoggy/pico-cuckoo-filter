@@ -33,7 +33,9 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Bits, maxNumKick
 
   def fingerprintsInBucketAt(bucketBitIndex: Bits): Int = buffer.unsigned(bucketBitIndex, bucketIndexBits).toInt
 
-  def fingerprintsInBucketAt(bucketBitIndex: Bits, value: Long): Unit = buffer.update(bucketBitIndex, bucketIndexBits, value)
+  def fingerprintsInBucketAt(bucketBitIndex: Bits, value: Long): Unit = {
+    buffer.update(bucketBitIndex, bucketIndexBits, value)
+  }
 
   def setFingerprint(bucketBitIndex: Bits, fingerprintIndex: Int, fingerprint: Fingerprint): Unit = {
     buffer.update(
