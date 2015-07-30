@@ -8,6 +8,7 @@ import org.pico.twiddle.Bits
 import org.pico.twiddle.instances._
 import org.pico.twiddle.syntax.arrayIndexed._
 import org.pico.twiddle.syntax.anyVal._
+import org.pico.twiddle.syntax.fixedInt._
 
 import scala.annotation.tailrec
 import scala.util.Random
@@ -23,7 +24,7 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Bits, maxNumKick
 
   private val bucketBits = Bits((1 << fingerprintBits) * fingerprintsPerBucket) + bucketIndexBits
 
-  private val buffer = new Array[Byte]((bucketBits * totalBuckets).byteIndexCeiling)
+  private val buffer = new Array[Byte]((bucketBits * totalBuckets) /+ bitSize[Byte])
 
   def bucketBitIndex(index: Long): Bits = bucketBits * index
 
@@ -46,6 +47,8 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Bits, maxNumKick
     Fingerprint(
       buffer.unsigned(bucketBitIndex + bucketIndexBits + fingerprintBits * fingerprintIndex, fingerprintBits))
   }
+
+  def bucketBits(bucketBitIndex: Bits): String = buffer.bitsString(bucketBitIndex, bucketBits)
 
   def removeFingerprintFromBucketForHash(bucketBitIndex: Bits, f: Fingerprint): Boolean = {
     val fingerprints = fingerprintsInBucketAt(bucketBitIndex)

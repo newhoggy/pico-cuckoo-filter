@@ -11,6 +11,8 @@ import scala.language.higherKinds
 
 package object arrayIndexed {
   implicit class ArrayIndexedOps[F[_], E](val self: F[E]) extends AnyVal {
+    @inline final def bitsString(i: Bits, size: Bits): String = ???
+
     @inline final def setAtIndex(
         i: Bits, e: E)(implicit ev: ArrayIndexed[F, E]): Unit = ev.setAtIndex(self, i, e)
 

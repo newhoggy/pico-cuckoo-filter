@@ -1,5 +1,7 @@
 package org.pico.twiddle
 
+import org.pico.twiddle.syntax.fixedInt._
+
 case class Bits(value: Long) extends AnyVal {
   def +(that: Bits): Bits = Bits(this.value + that.value)
   def -(that: Bits): Bits = Bits(this.value - that.value)
@@ -19,7 +21,7 @@ case class Bits(value: Long) extends AnyVal {
   def /(that: Long)(implicit ev: DummyImplicit): Bits = Bits(this.value / that)
   def %(that: Long)(implicit ev: DummyImplicit): Bits = Bits(this.value % that)
 
-  def byteIndexCeiling: Int = ((value + 7) / 8).toInt
+  def /+(that: Bits): Int = ((this + that - Bits(1)) / that).value.toInt
 
   def until(that: Bits) = (this.value until that.value).map(Bits)
 }
