@@ -25,35 +25,35 @@ class CuckooFilterSpec extends Specification with ScalaCheck {
     override def hash(a: Fingerprint): Hash64 = a.value.hashed
   }
 
-//  "Can insert exactly `fingerprintsPerBucket` number of fingerprints into a bucket" in {
-//    val filter = new CuckooFilter(fingerprintsPerBucket = 16, fingerprintBits = Bits(8), maxNumKicks = 5, totalBuckets = 1)
-//
-//    for (i <- 0 until 16) {
-//      val text = arbitrary[String].sample.get
-//
-//      filter.insert(text) ==== true
-//    }
-//
-//    val text = arbitrary[String].sample.get
-//
-//    filter.insert(text) ==== false
-//  }
-//
-//  "Can insert exactly `fingerprintsPerBucket * 2` number of fingerprints into two buckets of 16 fingerprints each" in {
-//    val filter = new CuckooFilter(fingerprintsPerBucket = 16, fingerprintBits = 8.bits, maxNumKicks = 5, totalBuckets = 2)
-//
-//    var inserted = 0
-//
-//    for (i <- 0 until 64) {
-//      val text = arbitrary[String].sample.get
-//
-//      if (filter.insert(text)) {
-//        inserted += 1
-//      }
-//    }
-//
-//    inserted ==== 32
-//  }
+  "Can insert exactly `fingerprintsPerBucket` number of fingerprints into a bucket" in {
+    val filter = new CuckooFilter(fingerprintsPerBucket = 16, fingerprintBits = Bits(8), maxNumKicks = 5, totalBuckets = 1)
+
+    for (i <- 0 until 16) {
+      val text = arbitrary[String].sample.get
+
+      filter.insert(text) ==== true
+    }
+
+    val text = arbitrary[String].sample.get
+
+    filter.insert(text) ==== false
+  }
+
+  "Can insert exactly `fingerprintsPerBucket * 2` number of fingerprints into two buckets of 16 fingerprints each" in {
+    val filter = new CuckooFilter(fingerprintsPerBucket = 16, fingerprintBits = 8.bits, maxNumKicks = 5, totalBuckets = 2)
+
+    var inserted = 0
+
+    for (i <- 0 until 64) {
+      val text = arbitrary[String].sample.get
+
+      if (filter.insert(text)) {
+        inserted += 1
+      }
+    }
+
+    inserted ==== 32
+  }
 
   "Inserted value can be looked up" in {
     prop { text: String =>
