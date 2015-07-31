@@ -68,7 +68,6 @@ class CuckooFilterSpec extends Specification with ScalaCheck {
   "Can insert exactly `fingerprintsPerBucket * 2` number of fingerprints into two buckets of 16 fingerprints each" in {
     val filter = new CuckooFilter(fingerprintsPerBucket = 16, fingerprintBits = 24.bits, maxNumKicks = 5, totalBuckets = 16)
     var accepted = Set.empty[String]
-    var rejected = Set.empty[String]
 
     var inserted = 0
 
@@ -79,12 +78,8 @@ class CuckooFilterSpec extends Specification with ScalaCheck {
         accepted += text
         inserted += 1
       } else {
-        rejected += text
+        failure("An insert was rejected")
       }
-    }
-
-    for (r <- rejected) {
-      filter.lookup(r) ==== false
     }
 
     for (a <- accepted) {
