@@ -16,7 +16,14 @@ package object arrayIndexed {
         implicit  ev0: FixedInt[E],
         ev1: FixedInt2FixedInt[Long, E],
         ev2: ArrayIndexed[F, E]): String = {
-      ("" /: (i until size)) { case (s, i) => if (signed(i, 1.bits) != 0) s + "1" else s + "0" }
+      println(s"bitString($i, $size)")
+      var acc = ""
+
+      for (b <- i.value until size.value) {
+        if (unsigned(b.bits, 1.bits) != 0) acc += "1" else acc += "0"
+      }
+
+      acc
     }
 
     @inline final def setAtIndex(

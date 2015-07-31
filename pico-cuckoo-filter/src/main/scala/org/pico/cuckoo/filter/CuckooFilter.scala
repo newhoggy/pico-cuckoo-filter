@@ -22,7 +22,7 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Bits, maxNumKick
 
   private val bucketIndexBits = Bits(32 - JInteger.numberOfLeadingZeros(fingerprintsPerBucket))
 
-  private val bucketBits = Bits((1 << fingerprintBits) * fingerprintsPerBucket) + bucketIndexBits
+  private val bucketBits = fingerprintBits * fingerprintsPerBucket + bucketIndexBits
 
   private val buffer = new Array[Byte]((bucketBits * totalBuckets) /+ bitSize[Byte])
 
@@ -90,13 +90,17 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Bits, maxNumKick
   def fingerprint[A: Hashable](a: A): Fingerprint = Fingerprint(implicitly[Hashable[A]].hash(a).value)
 
   def addToBucket(bucketBitIndex: Bits, f: Fingerprint): Boolean = {
+    println(s"bucketBits: $bucketBits")
+    println(s"before addToBucket(${bucketBitIndex}, $f}) => ${buffer.bitsString(bucketBitIndex, bucketBits)}")
     val fingerprints = fingerprintsInBucketAt(bucketBitIndex)
 
     if (fingerprints < fingerprintsPerBucket) {
       setFingerprint(bucketBitIndex, fingerprints, f)
       fingerprintsInBucketAt(bucketBitIndex, fingerprints + 1)
+      println(s"after addToBucket(${bucketBitIndex}, $f}) => ${buffer.bitsString(bucketBitIndex, bucketBits)}")
       true
     } else {
+      println(s"fail addToBucket")
       false
     }
   }
