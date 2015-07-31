@@ -2,6 +2,7 @@ package org.pico.twiddle.syntax
 
 import org.pico.twiddle._
 import org.pico.twiddle.instances._
+import org.pico.twiddle.syntax.anyVal._
 import org.pico.twiddle.syntax.fixedInt._
 import org.pico.twiddle.syntax.fixedInt2FixedInt._
 
@@ -11,7 +12,12 @@ import scala.language.higherKinds
 
 package object arrayIndexed {
   implicit class ArrayIndexedOps[F[_], E](val self: F[E]) extends AnyVal {
-    @inline final def bitsString(i: Bits, size: Bits): String = ???
+    @inline final def bitsString(i: Bits, size: Bits)(
+        implicit  ev0: FixedInt[E],
+        ev1: FixedInt2FixedInt[Long, E],
+        ev2: ArrayIndexed[F, E]): String = {
+      ("" /: (i until size)) { case (s, i) => if (signed(i, 1.bits) != 0) s + "1" else s + "0" }
+    }
 
     @inline final def setAtIndex(
         i: Bits, e: E)(implicit ev: ArrayIndexed[F, E]): Unit = ev.setAtIndex(self, i, e)
