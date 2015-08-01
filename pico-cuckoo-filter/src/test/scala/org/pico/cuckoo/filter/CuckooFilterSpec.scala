@@ -101,7 +101,7 @@ class CuckooFilterSpec extends Specification with ScalaCheck {
 
     for (i <- deletions) {
       if (!filter.delete(i)) {
-        failure("An delete was rejected")
+        failure("A delete was rejected")
       }
     }
 
