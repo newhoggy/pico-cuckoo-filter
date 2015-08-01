@@ -65,7 +65,7 @@ class CuckooFilterSpec extends Specification with ScalaCheck {
     }
   }
 
-  "Inserted elements can be looked up whilst elements no inserted cannot" in {
+  "Inserted elements can be looked up whilst elements not inserted cannot" in {
     val filter = new CuckooFilter(fingerprintsPerBucket = 16, fingerprintBits = 24.bits, maxNumKicks = 5, totalBuckets = 16)
     val inclusions = arbitrary[Set[String]].sample.get
     val exclusions = arbitrary[Set[String]].sample.get -- inclusions
@@ -81,6 +81,35 @@ class CuckooFilterSpec extends Specification with ScalaCheck {
     }
 
     for (e <- exclusions) {
+      filter.lookup(e) ==== false
+    }
+
+    ok
+  }
+
+  "Inserted elements can be looked up whilst deleted elements cannot" in {
+    val filter = new CuckooFilter(fingerprintsPerBucket = 16, fingerprintBits = 24.bits, maxNumKicks = 5, totalBuckets = 16)
+    val deletions = arbitrary[Set[String]].sample.get
+    val remaining = arbitrary[Set[String]].sample.get -- deletions
+    val insertions = deletions ++ remaining
+
+    for (i <- insertions) {
+      if (!filter.insert(i)) {
+        failure("An insert was rejected")
+      }
+    }
+
+    for (i <- deletions) {
+      if (!filter.delete(i)) {
+        failure("An delete was rejected")
+      }
+    }
+
+    for (i <- remaining) {
+      filter.lookup(i) ==== true
+    }
+
+    for (e <- deletions) {
       filter.lookup(e) ==== false
     }
 
