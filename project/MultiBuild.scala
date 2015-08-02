@@ -40,6 +40,10 @@ object MultiBuild extends Build with Version {
       .libs(specs2_core, specs2_scalacheck, scalacheck)
       .dependsOn(`pico-hash`, `pico-twiddle`)
 
+  lazy val `pico-cuckoo-filter-examples` = Project(id = "pico-cuckoo-filter-examples", base = file("pico-cuckoo-filter-examples"))
+      .standard.published
+      .dependsOn(`pico-cuckoo-filter`)
+
   lazy val root = Project(id = "all", base = file("."))
       .notPublished
       .aggregate(`pico-hash`, `pico-cuckoo-filter`, `pico-twiddle`)
