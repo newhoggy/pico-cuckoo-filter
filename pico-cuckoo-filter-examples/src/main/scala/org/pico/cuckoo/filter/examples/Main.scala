@@ -1,9 +1,13 @@
 package org.pico.cuckoo.filter.examples
 
+import java.lang.{Long => JLong}
+
 import org.pico.cuckoo.filter._
 import org.pico.hash.syntax._
-import org.pico.hash.{Hash64, Hashable}
+import org.pico.hash.{Hash64, Hashable, Hashable2}
 import org.pico.twiddle.syntax.anyVal._
+
+import scala.util.Random
 import scala.util.hashing.MurmurHash3
 
 object Main {
@@ -11,8 +15,16 @@ object Main {
     override def hash(a: String): Hash64 = Hash64(MurmurHash3.stringHash(a))
   }
 
+  implicit val hashable2String = new Hashable2[String] {
+    override def hash2(a: String): Hash64 = Hash64(JLong.reverse(MurmurHash3.stringHash(a)))
+  }
+
   implicit val hashableLong = new Hashable[Long] {
-    override def hash(a: Long): Hash64 = Hash64(MurmurHash3.arrayHash(Array(a)))
+    override def hash(a: Long): Hash64 = Hash64(a)
+  }
+
+  implicit val hashable2Long = new Hashable2[Long] {
+    override def hash2(a: Long): Hash64 = Hash64(JLong.reverse(MurmurHash3.arrayHash(Array(a))))
   }
 
   implicit val hashableFingerprint = new Hashable[Fingerprint] {
@@ -24,14 +36,18 @@ object Main {
       16, // The number fingerprints per bucket
       24.bits, // The number of bits in a finger print
       5, // The maximum number of kicks to attempt before failing an insert
-      128) // The total number of buckets
+      10000) // The total number of buckets
 
-    val a = filter.insert("Element") // Returns true if the insertion was successful
-    val b = filter.lookup("Element") // Returns true since the element was just inserted
-    val c = filter.delete("Element") // Returns true since the element was still in the filter
-    val d = filter.lookup("Element") // Returns false since the element has just been deleted
-    val e = filter.delete("Element") // Returns false since the element has already been deleted
+    var x = 0
 
-    println(s"$a $b $c $d $e")
+    while (x < 100000) {
+      filter.insert(Random.nextLong())
+
+      if (x % 1000 == 0) {
+        println(s"$x")
+      }
+
+      x += 1
+    }
   }
 }

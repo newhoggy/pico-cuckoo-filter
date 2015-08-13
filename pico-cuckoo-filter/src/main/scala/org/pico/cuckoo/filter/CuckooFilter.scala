@@ -2,7 +2,7 @@ package org.pico.cuckoo.filter
 
 import java.lang.{Integer => JInteger}
 
-import org.pico.hash.{Hash64, Hashable}
+import org.pico.hash.{Hashable2, Hash64, Hashable}
 import org.pico.hash.syntax._
 import org.pico.twiddle.Bits
 import org.pico.twiddle.instances._
@@ -87,7 +87,7 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Bits, maxNumKick
     fingerprintIndex(bucketBitIndex, fingerprint) != -1
   }
 
-  def fingerprint[A: Hashable](a: A): Fingerprint = Fingerprint(implicitly[Hashable[A]].hash(a).value, fingerprintBits)
+  def fingerprint[A: Hashable2](a: A): Fingerprint = Fingerprint(a.hashed2.value, fingerprintBits)
 
   def addToBucket(bucketBitIndex: Bits, f: Fingerprint): Boolean = {
     val fingerprints = fingerprintsInBucketAt(bucketBitIndex)
@@ -114,7 +114,7 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Bits, maxNumKick
     }
   }
 
-  final def insert[A: Hashable](value: A)(implicit ev0: Hashable[Long], ev1: Hashable[Fingerprint]): Boolean = {
+  final def insert[A: Hashable: Hashable2](value: A)(implicit ev0: Hashable[Long], ev1: Hashable[Fingerprint]): Boolean = {
     var f = fingerprint(value)
     val i1 = value.hashed
     val i2 = i1 ^ f.hashed
@@ -137,7 +137,7 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Bits, maxNumKick
     }
   }
 
-  final def lookup[A: Hashable](value: A)(implicit ev0: Hashable[Long], ev1: Hashable[Fingerprint]): Boolean = {
+  final def lookup[A: Hashable: Hashable2](value: A)(implicit ev0: Hashable[Long], ev1: Hashable[Fingerprint]): Boolean = {
     val f = fingerprint(value)
     val i1 = value.hashed
     val i2 = i1 ^ f.hashed
@@ -145,7 +145,7 @@ class CuckooFilter(fingerprintsPerBucket: Int, fingerprintBits: Bits, maxNumKick
     fingerprintIsInBucket(bucketBitIndex(i1), f) || fingerprintIsInBucket(bucketBitIndex(i2), f)
   }
 
-  final def delete[A: Hashable](value: A)(implicit ev0: Hashable[Long], ev1: Hashable[Fingerprint]): Boolean = {
+  final def delete[A: Hashable: Hashable2](value: A)(implicit ev0: Hashable[Long], ev1: Hashable[Fingerprint]): Boolean = {
     val f = fingerprint(value)
     val i1 = value.hashed
     val i2 = i1 ^ f.hashed

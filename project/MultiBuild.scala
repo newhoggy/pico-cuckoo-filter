@@ -6,6 +6,7 @@ object MultiBuild extends Build with Version {
   val scalacheck        = "org.scalacheck"    %% "scalacheck"         % "1.12.4"    % "test"
   val specs2_core       = "org.specs2"        %% "specs2-core"        % "3.6.2"     % "test"
   val specs2_scalacheck = "org.specs2"        %% "specs2-scalacheck"  % "3.6.2"     % "test"
+  val algebird_core     = "com.twitter"       %% "algebird-core"      % "0.11.0"    % "test"
 
   implicit class ProjectOps(self: Project) {
     def standard: Project = {
@@ -42,9 +43,10 @@ object MultiBuild extends Build with Version {
 
   lazy val `pico-cuckoo-filter-examples` = Project(id = "pico-cuckoo-filter-examples", base = file("pico-cuckoo-filter-examples"))
       .standard.published
+      .libs(scalacheck, algebird_core)
       .dependsOn(`pico-cuckoo-filter`)
 
-  lazy val root = Project(id = "all", base = file("."))
+  lazy val root = Project(id = "pico-cuckoo-filter-all", base = file("."))
       .notPublished
       .aggregate(`pico-hash`, `pico-cuckoo-filter`, `pico-twiddle`)
 }

@@ -70,7 +70,7 @@ Complete sample
 ```scala
 import org.pico.cuckoo.filter._
 import org.pico.hash.syntax._
-import org.pico.hash.{Hash64, Hashable}
+import org.pico.hash.{Hash64, Hashable, Hashable2}
 import org.pico.twiddle.syntax.anyVal._
 import scala.util.hashing.MurmurHash3
 
@@ -79,8 +79,16 @@ object Main {
     override def hash(a: String): Hash64 = Hash64(MurmurHash3.stringHash(a))
   }
 
+  implicit val hashable2String = new Hashable2[String] {
+    override def hash2(a: String): Hash64 = Hash64(JLong.reverse(MurmurHash3.stringHash(a)))
+  }
+
   implicit val hashableLong = new Hashable[Long] {
     override def hash(a: Long): Hash64 = Hash64(MurmurHash3.arrayHash(Array(a)))
+  }
+
+  implicit val hashable2Long = new Hashable2[Long] {
+    override def hash2(a: Long): Hash64 = Hash64(JLong.reverse(MurmurHash3.arrayHash(Array(a))))
   }
 
   implicit val hashableFingerprint = new Hashable[Fingerprint] {

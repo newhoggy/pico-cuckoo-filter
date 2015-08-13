@@ -1,9 +1,12 @@
 package org.pico.cuckoo.filter
 
+import java.lang.{Long => JLong}
+
 import org.pico.hash.syntax._
-import org.pico.hash.{Hash64, Hashable}
+import org.pico.hash.{Hash64, Hashable, Hashable2}
 import org.pico.twiddle.Bits
 import org.pico.twiddle.syntax.anyVal._
+import org.scalacheck.{Gen, Arbitrary}
 import org.scalacheck.Arbitrary.arbitrary
 import org.specs2.ScalaCheck
 import org.specs2.mutable.Specification
@@ -19,6 +22,14 @@ class CuckooFilterSpec extends Specification with ScalaCheck {
 
   implicit val hashableLong = new Hashable[Long] {
     override def hash(a: Long): Hash64 = Hash64(MurmurHash3.arrayHash(Array(a)))
+  }
+
+  implicit val hashable2String = new Hashable2[String] {
+    override def hash2(a: String): Hash64 = a.hashed.value.hashed
+  }
+
+  implicit val hashable2Long = new Hashable2[Long] {
+    override def hash2(a: Long): Hash64 = a.hashed.value.hashed
   }
 
   implicit val hashableFingerprint = new Hashable[Fingerprint] {
@@ -66,6 +77,8 @@ class CuckooFilterSpec extends Specification with ScalaCheck {
   }
 
   "Inserted elements can be looked up whilst elements not inserted cannot" in {
+    implicit val arbitraryString = Arbitrary[String](Gen.alphaStr)
+
     val filter = new CuckooFilter(fingerprintsPerBucket = 16, fingerprintBits = 24.bits, maxNumKicks = 5, totalBuckets = 16)
     val inclusions = arbitrary[Set[String]].sample.get
     val exclusions = arbitrary[Set[String]].sample.get -- inclusions
