@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/newhoggy/pico-cuckoo-filter.svg?branch=master)](https://travis-ci.org/newhoggy/pico-cuckoo-filter)
+[![Circle CI](https://circleci.com/gh/newhoggy/pico-cuckoo-filter.svg?style=svg)](https://circleci.com/gh/newhoggy/pico-cuckoo-filter)
 
 Cuckoo filter
 =============
