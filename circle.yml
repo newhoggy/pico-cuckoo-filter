@@ -1,0 +1,17 @@
+dependencies:
+  cache_directories:
+    - ~/.sbt/boot
+
+  pre:
+    - scripts/check-env-variables.sh
+    - scripts/get-credentials.sh
+
+  post:
+    - find ~/.sbt -name "*.lock" | xargs rm
+    - find ~/.ivy2 -name "ivydata-*.properties" | xargs rm
+
+deployment:
+  master:
+    branch: master
+    commands:
+      - sbt +publish

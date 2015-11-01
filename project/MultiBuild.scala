@@ -19,11 +19,17 @@ object MultiBuild extends Build with Version {
 
     def libs(modules: ModuleID*) = self.settings(libraryDependencies ++= modules)
 
-    def notPublished: Project = self.settings(publish := {}).settings(publishArtifact := false)
+    def notPublished: Project = {
+      self
+          .settings(publish := {})
+          .settings(publishArtifact := false)
+    }
 
-    def published: Project = self
-        .settings(publishTo in ThisBuild := Some("Scalap Releases" at "s3://dl.john-ky.io/maven/releases"))
-        .settings(isSnapshot in ThisBuild := true)
+    def published: Project = {
+      self
+          .settings(publishTo := Some("Scalap Releases" at "s3://dl.john-ky.io/maven/releases"))
+          .settings(isSnapshot := true)
+    }
   }
 
   lazy val `pico-twiddle` = Project(id = "pico-twiddle", base = file("pico-twiddle"))
