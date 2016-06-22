@@ -1,6 +1,11 @@
+machine:
+  environment:
+    COURSIER_PROGRESS: 0
+
 dependencies:
   cache_directories:
-    - ~/.sbt/boot
+    - ~/.sbt
+    - ~/.coursier
 
   pre:
     - scripts/check-env-variables.sh
@@ -9,6 +14,16 @@ dependencies:
   post:
     - find ~/.sbt -name "*.lock" | xargs rm
     - find ~/.ivy2 -name "ivydata-*.properties" | xargs rm
+
+test:
+  override:
+    - sbt +test
+
+  post:
+    - sbt coverage clean test coverageReport coverageAggregate
+    - mkdir -p target/scala-2.11/coverage-report/
+    - sbt codacyCoverage
+    - bash <(curl -s https://codecov.io/bash)
 
 deployment:
   master:
